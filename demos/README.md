@@ -1,4 +1,4 @@
 # Our demos!
-<video src="https://github.com/JusticeInternational/project-config/blob/master/demos/videos/android-demo1.mp4?raw=true4" width="320" height="200" controls preload>![](videos/android-demo1.png)</video>
 
-
+- [![](videos/android-demo1.png)](videos/android-demo1.mp4?raw=true4)
+- [![](videos/android-demo2.png)](videos/android-demo2.mp4?raw=true4)
