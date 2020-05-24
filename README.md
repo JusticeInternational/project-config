@@ -6,7 +6,7 @@ Here are some of the working parts:
 
 1. [Setup the backend using Human Connections app](https://github.com/JusticeInternational/Human-Connection). We'll use the `master` branch to keep up to date with upstream, and the `stable` branch to deploy from since most of this will be 3rd party. We may use other branches to help with our development process.
 2. [The Venezuela team](https://github.com/orgs/JusticeInternational/teams/venezueladevteam/members) has started a [proto-type android app](https://github.com/JusticeInternational/RedSol-android). This will be our focus for end-user interactions.
-3. This project, will be used for project management, [demos](demos/README.md), [docs](docs/README.md), and automation we use to configure all the things.
+3. This project, will be used for [project management](https://github.com/JusticeInternational/project-config/projects/1), [demos](demos/README.md), [docs](docs/README.md), and automation we use to configure all the things.
 
 Future apps we'll need may include:
 
