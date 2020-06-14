@@ -16,7 +16,7 @@ Future apps we'll need may include:
 Some references to initial documentation:
 
 - User flows and prototypes: https://www.figma.com/file/nolX6HBTIM4UlNAHnjddcl/Red-Solidaria-Prototype?node-id=1171%3A4
-- Data tables structure Version 1: https://docs.google.com/document/d/1haNTmqmblrTpvQFqN-UDqZz8S0e1X3k59LPkEVh3EJs/edit?usp=sharing
-Data tables structure Version 2 (current): https://docs.google.com/document/d/128Vx0ouMhWwhu5oFXazjv3yq5S0Q2Bjl5WBRCLVjVX4/edit?usp=sharing
+- Data tables structure Version 2 (current): https://docs.google.com/document/d/128Vx0ouMhWwhu5oFXazjv3yq5S0Q2Bjl5WBRCLVjVX4/edit?usp=sharing
+- Backlog version 3 (current): https://docs.google.com/spreadsheets/d/1bOGsx9E77-5QbzHp9VJhefdqPriGX5TjfV0589Fn7u8/edit?usp=sharing
 
 See also the subfolder "Reference" in documents for more on initial documentation pertinent to the design of the app
