@@ -1,0 +1,50 @@
+# Introduction
+
+[Human-Connection](https://github.com/JusticeInternational/Human-Connection) is our front-end and back-end core applications that come from the OSS project on Human-Connection and help accelerate our application development for RedSol. We extend Human-Connection to provide a backend and frontend for our users.
+
+## Development Setup
+Humman Connection was setup to use docker containers, and there are several ways we can deploy the webapp and backend using instructions provided in the `./deployment` folder. We'll use `docker` and `docker-compose` commands to make this simple, so, first step:
+
+1. You should have docker and docker-compose installed from www.docker.com
+1. Setup security for `./backend` and `./webapp`:
+   ```bash
+   cd ./backend
+   cp ./.env.template ./.env
+   cd ../webapp
+   cp ./.env.template ./.env
+   cd ..
+   ```
+   The file can be left as is if your development system is secure, otherwise, please tweak the passwords to your liking.
+1. If you want to change the defaults, then edit the `.env.template` files directly
+
+### Build the Containers
+The DB - `./neo4j`, backend - `./backend` and frontend - `./webapp` folders each have a `Dockerfile` that needs to be built. Build those with these steps:
+
+```
+docker-compose build
+```
+
+
+This will create 3 docker containers: DB - `humanconnection/neo4j:latest` , backend - `humanconnection/nitro-backend:latest`, and frontend - `humanconnection/nitro-web:latest`
+
+There is also a maintenance container but the first 3 arre most important.
+
+### Run a Dev instance
+
+1. Change folders to the base of the repository where you see the `docker-compose.yml`
+1. Start docker-compose: `docker-compose up`
+   ```
+    webapp_1       | ✔ Server: Compiled successfully in 38.50s
+    webapp_1       | ✔ Client: Compiled successfully in 54.67s
+    webapp_1       | ℹ Waiting for file changes
+    webapp_1       | ℹ Memory usage: 1.03 GB (RSS: 1.23 GB)
+    webapp_1       | ℹ Listening on: http://172.22.0.6:3000/
+   ```
+1. Start a browser that points to : http://localhost:3000/
+1. The backend can also be access at this url: http://localhost:4000/
+1. Login with one of the credentials listed [here](https://github.com/JusticeInternational/Human-Connection#live-demo). For example, user - `admin@example.org` and password - `1234`.
+
+### Starting Backend in the background
+1. Stop any existing apps running with `docker-compose down` or ctrl-C on the running instance.
+1. Run the command ; `docker-compose up -d`
+
