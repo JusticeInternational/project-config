@@ -41,6 +41,7 @@ There is also a maintenance container but the first 3 arre most important.
     webapp_1       | ℹ Listening on: http://172.22.0.6:3000/
    ```
 1. Start a browser that points to : http://localhost:3000/
+1. The backend can also be access at this url: http://localhost:4000/
 1. Login with one of the credentials listed [here](https://github.com/JusticeInternational/Human-Connection#live-demo). For example, user - `admin@example.org` and password - `1234`.
 
 ### Starting Backend in the background
