@@ -5,8 +5,10 @@ This is a place holder for now, we're working on setting up some of our initial 
 Here are some of the working parts:
 
 1. [Setup the backend using Human Connections app](docs/setup-backend.md)
-2. [The Venezuela team](https://github.com/orgs/JusticeInternational/teams/venezueladevteam/members) has started a [proto-type android app](docs/setup-android.md). This will be our focus for end-user interactions.
-3. This project, will be used for [project management](https://github.com/JusticeInternational/project-config/projects/1), [demos](demos/README.md), [docs](docs/README.md), and [automation we use to configure](config/README.md) all the things.
+2. [The Venezuela team](https://github.com/orgs/JusticeInternational/teams/venezueladevteam/members) has started a [proto-type android app](docs/setup-android.md).  This will be our focus for end-user interactions. See demo videos following. Individual user: https://youtu.be/m2x6XhZGL103. Provider: https://youtu.be/NHSQN9g7TX8
+
+
+This project, will be used for [project management](https://github.com/JusticeInternational/project-config/projects/1), [demos](demos/README.md), [docs](docs/README.md), and [automation we use to configure](config/README.md) all the things.
 
 Future apps we'll need may include:
 
