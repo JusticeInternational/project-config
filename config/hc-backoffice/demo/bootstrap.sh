@@ -19,5 +19,6 @@ if [ ! -x /usr/local/bin/ngrok ]; then
 fi
 
 docker-compose up -d
+docker-compose exec backend yarn run db:seed
 
 ngrok start -config ./ngrok.yml webapp

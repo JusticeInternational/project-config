@@ -17,7 +17,7 @@ services:
       - HOST=0.0.0.0
       - GRAPHQL_URI=http://backend:4000
       - MAPBOX_TOKEN="pk.eyJ1IjoiaHVtYW4tY29ubmVjdGlvbiIsImEiOiJjajl0cnBubGoweTVlM3VwZ2lzNTNud3ZtIn0.bZ8KK9l70omjXbEkkbHGsQ"
-#      - PUBLIC_REGISTRATION=false
+      - PUBLIC_REGISTRATION=false
   backend:
     image: docker.pkg.github.com/justiceinternational/project-config/backend:latest
     networks:
@@ -35,7 +35,7 @@ services:
       - SMTP_PORT=25
       - SMTP_IGNORE_TLS=true
       - "DEBUG=${DEBUG}"
-#      - PUBLIC_REGISTRATION=false
+      - PUBLIC_REGISTRATION=false
       - NEO4J_URI=bolt://neo4j:7687
       - GRAPHQL_URI=http://backend:4000
       - CLIENT_URI=http://localhost:3000
