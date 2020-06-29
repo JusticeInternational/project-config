@@ -1,0 +1,62 @@
+version: "3.4"
+
+services:
+  webapp:
+    image: docker.pkg.github.com/justiceinternational/project-config/frontend:latest
+    ports:
+      - 3000:3000
+      - 3002:3002
+    networks:
+      - hc-network
+    depends_on:
+      - backend
+#    volumes:
+#      - webapp_node_modules:/nitro-web/node_modules
+    environment:
+      - NUXT_BUILD=/tmp/nuxt # avoid file permission issues when `rm -rf .nuxt/`
+      - PUBLIC_REGISTRATION=false
+      - HOST=0.0.0.0
+      - GRAPHQL_URI=http://backend:4000
+      - MAPBOX_TOKEN="pk.eyJ1IjoiaHVtYW4tY29ubmVjdGlvbiIsImEiOiJjajl0cnBubGoweTVlM3VwZ2lzNTNud3ZtIn0.bZ8KK9l70omjXbEkkbHGsQ"
+    command: yarn run dev
+  backend:
+    image: docker.pkg.github.com/justiceinternational/project-config/backend:latest
+    networks:
+      - hc-network
+    depends_on:
+      - neo4j
+    ports:
+      - 4000:4000
+#    volumes:
+#      - backend_node_modules:/nitro-backend/node_modules
+#      - uploads:/nitro-backend/public/uploads
+    command: yarn run dev
+    environment:
+      - SMTP_HOST=mailserver
+      - SMTP_PORT=25
+      - SMTP_IGNORE_TLS=true
+      - "DEBUG=${DEBUG}"
+      - PUBLIC_REGISTRATION=false
+      - NEO4J_URI=bolt://neo4j:7687
+      - GRAPHQL_URI=http://backend:4000
+      - CLIENT_URI=http://localhost:3000
+      - JWT_SECRET=b/&&7b78BF&fv/Vd
+      - MAPBOX_TOKEN=pk.eyJ1IjoiaHVtYW4tY29ubmVjdGlvbiIsImEiOiJjajl0cnBubGoweTVlM3VwZ2lzNTNud3ZtIn0.KZ8KK9l70omjXbEkkbHGsQ
+      - PRIVATE_KEY_PASSPHRASE=a7dsf78sadg87ad87sfagsadg78
+  neo4j:
+    image: docker.pkg.github.com/justiceinternational/project-config/db:latest
+    networks:
+      - hc-network
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_dbms_security_procedures_unrestricted=algo.*,apoc.*
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+    ports:
+      - 7687:7687
+      - 7474:7474
+    volumes:
+      - neo4j_data:/data
+networks:
+  hc-network:
+volumes:
+  neo4j_data:
