@@ -15,12 +15,20 @@ This is some work in progress and we still have some things to work out with thi
 - Startup up a development instance using container repositories in `JusticeInternational/project-config`
 - Access the url's using codespaces, and login
 
-To start it, run these commands:
-
-```
-cd ./config/hc-backoffice/demo
-./bootstrap.sh
-```
+### Steps
+1. Get a Personal Access Token (PAT) for GitHub and have it setup with read/write access, to fill in `<your-pat>` below.
+1. Open codespaces and a new terminal
+1. `export USERNAME=<yourusername>` where `<yourusername>` is your GitHub login name
+1. `export GITHUB_TOKEN=<your-pat>` from the first step where you setup a PAT
+1. Login to GitHub Packages for docker:
+   ```
+   echo $GITHUB_TOKEN | docker login docker.pkg.github.com  --username $USERNAME --password-stdin
+   ```
+1. Startup the demo environment
+   ```
+   cd ./config/hc-backoffice/demo
+   ./bootstrap.sh
+   ```
 
 Double click on the url, and login with credentials from [here](https://github.com/JusticeInternational/Human-Connection#live-demo). For example, user - `admin@example.org` and password - `1234`.
 
