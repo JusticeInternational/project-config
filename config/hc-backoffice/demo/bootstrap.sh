@@ -5,8 +5,10 @@ set -e
 # Lets setup the human connection backend for development
 
 # setup docker-compose
-[ ! -x /usr/local/bin/docker-compose ] && \
+if [ ! -x /usr/local/bin/docker-compose ]; then
   sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+fi
 
 # setup ngrok https://dashboard.ngrok.com/get-started/setup
 if [ ! -x /usr/local/bin/ngrok ]; then
