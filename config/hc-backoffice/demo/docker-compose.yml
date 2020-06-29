@@ -12,13 +12,12 @@ services:
       - backend
 #    volumes:
 #      - webapp_node_modules:/nitro-web/node_modules
-#   command: yarn run dev
+    command: yarn run dev
     environment:
-      - NUXT_BUILD=/tmp/nuxt # avoid file permission issues when `rm -rf .nuxt/`
-      - PUBLIC_REGISTRATION=false
       - HOST=0.0.0.0
       - GRAPHQL_URI=http://backend:4000
       - MAPBOX_TOKEN="pk.eyJ1IjoiaHVtYW4tY29ubmVjdGlvbiIsImEiOiJjajl0cnBubGoweTVlM3VwZ2lzNTNud3ZtIn0.bZ8KK9l70omjXbEkkbHGsQ"
+      - PUBLIC_REGISTRATION=false
   backend:
     image: docker.pkg.github.com/justiceinternational/project-config/backend:latest
     networks:
@@ -30,7 +29,7 @@ services:
 #    volumes:
 #      - backend_node_modules:/nitro-backend/node_modules
 #      - uploads:/nitro-backend/public/uploads
-#    command: yarn run dev
+    command: yarn run dev
     environment:
       - SMTP_HOST=mailserver
       - SMTP_PORT=25
