@@ -35,7 +35,7 @@ docker-compose up -d
 
 for i in $(seq 1 30); do
   is_backend_up && docker-compose exec backend yarn run db:seed && \
-    break || sleep 1 && echo 'waiting for backend to start';
+    break || sleep 5 && echo 'waiting for backend to start';
 done
 
 ngrok start -config ./ngrok.yml webapp
