@@ -29,7 +29,7 @@ services:
 #    volumes:
 #      - backend_node_modules:/nitro-backend/node_modules
 #      - uploads:/nitro-backend/public/uploads
-    command: yarn run dev db:seed
+    command: yarn run dev
     environment:
       - SMTP_HOST=mailserver
       - SMTP_PORT=25

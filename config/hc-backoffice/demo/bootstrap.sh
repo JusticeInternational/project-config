@@ -18,6 +18,24 @@ if [ ! -x /usr/local/bin/ngrok ]; then
     ngrok --version
 fi
 
+function get_username() {
+  curl -X POST \
+    -s -H "Content-Type: application/json" \
+    --data '{ "query": "{User(role:admin){name}}"}' \
+    http://localhost:4000/graphql | \
+    jq '.data.User[0].name' 2>/dev/null
+}
+
+function is_backend_up() {
+  [ ! -z "$(get_username)" ] && return 0
+  return 1
+}
+
 docker-compose up -d
+
+for i in $(seq 1 30); do
+  is_backend_up && docker-compose exec backend yarn run db:seed && \
+    break || sleep 1 && echo 'waiting for backend to start';
+done
 
 ngrok start -config ./ngrok.yml webapp
