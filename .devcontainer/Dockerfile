@@ -58,4 +58,4 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 # USER $USERNAME
 
 # ENTRYPOINT "/bin/entrypoint.sh"
-# CMD [ "sleep", "infinity" ]
+CMD [ "sleep", "infinity" ]
