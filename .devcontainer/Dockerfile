@@ -31,9 +31,11 @@ RUN export DEBIAN_FRONTEND=noninteractive \
        openssh-client \
        procps \
        socat \
+       sudo \
        vim \
        bash \
        zsh \
+    && chmod +x /bin/containeruser.sh \
     && /bin/containeruser.sh \
     # Use Docker script from script library to set things up (installs: docker, docker-compose, sets up dind, and a bunch of other stuff)
     && curl -sSL $DOCKER_SCRIPT_SOURCE -o /tmp/docker-setup.sh \
