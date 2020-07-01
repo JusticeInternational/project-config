@@ -57,5 +57,5 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 # try running as root
 # USER $USERNAME
 
-ENTRYPOINT "/bin/entrypoint.sh"
-CMD [ "sleep", "infinity" ]
+# ENTRYPOINT "/bin/entrypoint.sh"
+# CMD [ "sleep", "infinity" ]
