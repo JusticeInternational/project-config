@@ -20,14 +20,18 @@ COPY containeruser.sh /bin/containeruser.sh
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y install --no-install-recommends \
+       apt-transport-https \    
        apt-utils \
        dialog \
+       ca-certificates \
        coreutils \
        curl \
        git \
+       gnupg2 \
        iproute2 \
        jq \
        less \
+       lsb-release \
        openssh-client \
        procps \
        socat \
