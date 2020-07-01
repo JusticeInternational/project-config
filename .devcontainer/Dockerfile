@@ -54,7 +54,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-USER $USERNAME
+# try running as root
+# USER $USERNAME
 
 ENTRYPOINT "/bin/entrypoint.sh"
 CMD [ "sleep", "infinity" ]
