@@ -62,12 +62,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     #
     # Default to root only access to the Docker socket, set up non-root init script
     && touch /var/run/docker.socket \
-    && ln -s /var/run/docker-host.socket /var/run/docker.socket
+    && ln -s /var/run/docker-host.socket /var/run/docker.socket \
     && echo '#!/bin/sh\n\
     sudo rm -rf /var/run/docker-host.socket\n\
     ((sudo socat UNIX-LISTEN:/var/run/docker.socket,fork,mode=660,user=${NONROOT_USER} UNIX-CONNECT:/var/run/docker-host.socket) 2>&1 >> /tmp/vscr-dind-socat.log) & > /dev/null\n\
     "$@"' >> /usr/local/share/docker-init.sh \
-    && chmod +x /usr/local/share/docker-init.sh
+    && chmod +x /usr/local/share/docker-init.sh \
     #
     # Clean up
     && apt-get autoremove -y \
