@@ -1,6 +1,10 @@
 {
-	"name": "Node.js 12",
-	"dockerFile": "Dockerfile",
+	"name": "RedSol Node.js 12",
+	
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "docker-from-docker",
+	"workspaceFolder": "/workspace",
+
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
@@ -9,8 +13,16 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
+		"ms-azuretools.vscode-docker",
 		"dbaeumer.vscode-eslint"
-	]
+	],
+
+
+	// Uncomment the next line if you want start specific services in your Docker Compose config.
+	// "runServices": [],
+
+	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -19,5 +31,5 @@
 	// "postCreateCommand": "yarn install",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "node"
+	"remoteUser": "node"
 }
