@@ -7,4 +7,6 @@ RUN apt-get update && \
     apt-get install -y \
     zsh \
     vim \
-    jq
+    jq \
+    coreutils \
+    procps
