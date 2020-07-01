@@ -17,6 +17,7 @@ EXPOSE 4000
 
 COPY containeruser.sh /bin/containeruser.sh
 COPY entrypoint.sh /bin/entrypoint.sh
+COPY /root/.vsonline/ /tmp/root/.vsonline/
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
