@@ -16,6 +16,7 @@ ARG TARGET_SOCKET=/var/run/docker.sock
 EXPOSE 4000
 
 COPY containeruser.sh /bin/containeruser.sh
+COPY entrypoint.sh /bin/entrypoint.sh
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
@@ -39,6 +40,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
        vim \
        bash \
        zsh \
+    && chmod +x /bin/entrypoint.sh \
     && chmod +x /bin/containeruser.sh \
     && /bin/containeruser.sh \
     # Use Docker script from script library to set things up (installs: docker, docker-compose, sets up dind, and a bunch of other stuff)
@@ -52,10 +54,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-COPY entrypoint.sh /bin/entrypoint.sh
-
 USER $USERNAME
 
 ENTRYPOINT "/bin/entrypoint.sh"
-
 CMD [ "sleep", "infinity" ]
