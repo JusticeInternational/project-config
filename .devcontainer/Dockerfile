@@ -22,15 +22,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
        apt-utils \
        dialog \
-       ca-certificates \
        coreutils \
        curl \
        git \
-       gnupg2 \
        iproute2 \
        jq \
        less \
-       lsb_release \
        openssh-client \
        procps \
        socat \
