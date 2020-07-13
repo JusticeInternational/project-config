@@ -2,6 +2,26 @@
 
 [Human-Connection](https://github.com/JusticeInternational/Human-Connection) is our front-end and back-end core applications that come from the OSS project on Human-Connection and help accelerate our application development for RedSol. We extend Human-Connection to provide a backend and frontend for our users.
 
+We can communicate with the upstream development team for core features on [discord](https://github.com/Human-Connection/Human-Connection#developer-chat). This core base will soon be transformed as well to a different mechanism. When this happens we'll be looking at how we'll adapt. For this reason it's important that we have a log of [issues](https://github.com/JusticeInternational/project-config/issues) for our work so we can track our changes and know what we'll need to adapt.
+
+## Develop Remotely
+
+We also now have the ability to develop remotely using [GitHub Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces). To get started follow these steps:
+
+- Signup for the [beta](https://github.com/features/codespaces/signup)
+- Contact us on Whatsapp or open and issue and ping @wenlock so we know what work you'll be doing and we can enable your account
+- Use code spaces on https://github.com/JusticeInternational/Human-Connection, you can see [how we do it here](https://github.com/JusticeInternational/Human-Connection/pull/1)
+
+### Run Bootstrap
+We have a file in the `.devcontainer` folder which can be used in an interactive shell in codespaces to start up all services:
+```bash
+$> ./.devcontainer/bootstrap.sh
+$> source ./.devcontainer/profile_devcontainer_alias.sh
+$> seed
+$> ngrok_start
+```
+Read up more on codespaces setup [here](https://github.com/JusticeInternational/Human-Connection/blob/stable/.devcontainer/README.md).
+
 ## Development Setup
 Humman Connection was setup to use docker containers, and there are several ways we can deploy the webapp and backend using instructions provided in the `./deployment` folder. We'll use `docker` and `docker-compose` commands to make this simple, so, first step:
 
