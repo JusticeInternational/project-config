@@ -8,7 +8,6 @@ env:
   DOCKER_IMAGE_NAME: humanconnection-azure-ttt
   IMAGE_REGISTRY_URL: docker.pkg.github.com
   AZURE_WEBAPP_NAME: humanconnection-ttt-app
-  #################################################
 
 jobs:
   build:
