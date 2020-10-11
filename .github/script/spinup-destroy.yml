@@ -3,7 +3,7 @@ name: Configure Azure environment
 on:
   pull_request:
     types: [labeled]
-
+##### test 
 env:
   AZURE_RESOURCE_GROUP: cd-with-actions
   AZURE_APP_PLAN: actions-ttt-deployment
