@@ -16,7 +16,7 @@ env:
   #################################################
   #################################################
   ### REPLACE USERNAME WITH GH USERNAME         ###
-  AZURE_WEBAPP_NAME: yumibyte-ttt-app
+  AZURE_WEBAPP_NAME: redsol-ttt-app
   #################################################
   
 jobs:
