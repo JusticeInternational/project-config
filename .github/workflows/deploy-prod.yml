@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - deploy-prod
 
 env:
   DOCKER_IMAGE_NAME: redsol-azure-ttt
