@@ -57,7 +57,7 @@ jobs:
           ACR_REGISTRY_ID=$(az acr show --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --query id --output tsv --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}})
           echo "==> ${P_ID}"
           echo "==> ${ACR_REGISTRY_ID}"
-          az role assignment create --assignee "${SP_APP_ID}" --scope "${ACR_REGISTRY_ID}" --role acrpull
+          az role assignment create --assignee "${P_ID}" --scope "${ACR_REGISTRY_ID}" --role acrpull
 
       # - name: Configure webapp to use GitHub Packages
       #   if: success()
