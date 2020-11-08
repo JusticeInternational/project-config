@@ -11,6 +11,7 @@ env:
   DOCKER_IMAGE_NAME: db
   IMAGE_REGISTRY_URL: docker.pkg.github.com
   AZ_IMAGE_REGISTRY_URL: redsol.azurecr.io
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
 jobs:
   # build:
@@ -52,10 +53,10 @@ jobs:
     # needs: Build-Docker-Image
     name: Deploy app container to Azure
     steps:
-      - name: "Login via Azure CLI"
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # - name: "Login via Azure CLI"
+      #   uses: azure/login@v1
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Login to GitHub Registry
         uses: azure/docker-login@v1
