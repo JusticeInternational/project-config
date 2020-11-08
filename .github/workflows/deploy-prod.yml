@@ -53,6 +53,11 @@ jobs:
     # needs: Build-Docker-Image
     name: Deploy app container to Azure
     steps:
+      - name: Get Docker Repo Name
+        id: get-repository
+        run: |
+          echo "::set-output name=docker-repo::$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]' )"
+    
       # - name: "Login via Azure CLI"
       #   uses: azure/login@v1
       #   with:
@@ -74,8 +79,8 @@ jobs:
 
       - name: Publish Images to Azure
         run: |
-          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
+          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
                      ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
           docker push ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
