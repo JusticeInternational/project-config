@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - publish-neo4j
+      - update-ref
 
 env:
   # built from https://github.com/JusticeInternational/project-config/packages/290557?version=latest
