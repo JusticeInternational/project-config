@@ -49,7 +49,6 @@ jobs:
         if: success()
         run: |
           az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic
-          az aks update -n ${CLUSTER_NAME} -g ${RESOURCE_GROUP_NAME} --attach-acr ${ACR_NAME}  
 
       - name: Create webapp identity
         if: success()
