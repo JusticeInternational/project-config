@@ -13,7 +13,7 @@ Things that help us here:
 ## Deploying to a Stage Environment
 
 ## Deployment to Production
-- We're using GitHub Actions to deploy this app.
-- First we need to deploy the backend with `.github/workflows/spinup-destroy.yml`
-- Then we need to setup ACR service [principles here](how-do-i-setup-acr.md)
-- Finally make changes and merge to master so we can deploy `config/docker-compose.yml` with AZ Web Apps
+- We're using GitHub Actions to deploy this app. First you must have an environment setup. Make sure that we are running that on https://portal.azure.com/.
+- New production environments can be deployed with `.github/workflows/spinup-destroy.yml`.
+- Then we need to setup ACR service [principals here](how-do-i-setup-acr.md) if a new production environment is deployed.
+- Finally make changes and merge to master so we can deploy `config/docker-compose.yml` with AZ Web Apps.
