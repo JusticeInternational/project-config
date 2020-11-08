@@ -48,7 +48,7 @@ jobs:
       - name: Create Az Registry
         if: success()
         run: |
-          az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic
+          az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic --admin-enabled true
 
       - name: Create webapp identity
         if: success()
