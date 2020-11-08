@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
     neo4j:
-      image: humanconnection/neo4j:latest
+      image: redsol.azurecr.io/db:latest
       networks:
         - hc-network
       environment:

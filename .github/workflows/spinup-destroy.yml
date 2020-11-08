@@ -8,6 +8,8 @@ env:
   AZURE_RESOURCE_GROUP: redsol-RG
   AZURE_APP_PLAN: actions-ttt-deployment
   AZURE_LOCATION: '"East US"'
+  # Used in AZ_IMAGE_REGISTRY_URL: *.azurecr.io
+  AZ_IMAGE_REGISTRY_NAME: redsol
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
   #################################################
@@ -45,6 +47,11 @@ jobs:
         if: success()
         run: |
           az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }} --multicontainer-config-type compose --multicontainer-config-file config/docker-compose.yml --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      
+      - name: Create Az Registry
+        if: success()
+        run: |
+          az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic
 
       # - name: Configure webapp to use GitHub Packages
       #   if: success()

@@ -10,16 +10,7 @@ env:
   # built from https://github.com/JusticeInternational/project-config/packages/290557?version=latest
   DOCKER_IMAGE_NAME: db
   IMAGE_REGISTRY_URL: docker.pkg.github.com
-  AZURE_RESOURCE_GROUP: redsol-RG
-  AZURE_APP_PLAN: actions-ttt-deployment
-  AZURE_LOCATION: '"Central US"'
-  #################################################
-  ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
-  #################################################
-  #################################################
-  ### REPLACE USERNAME WITH GH USERNAME         ###
-  AZURE_WEBAPP_NAME: redsol-ttt-app
-  #################################################
+  AZ_IMAGE_REGISTRY_URL: redsol.azurecr.io
   
 jobs:
   # build:
@@ -66,19 +57,28 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - uses: azure/docker-login@v1
+      - name: Login to GitHub Registry
+        uses: azure/docker-login@v1
         with:
           login-server: ${{env.IMAGE_REGISTRY_URL}}
           username: ${{ github.actor }}
-          password: ${{ secrets.PACKAGE_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy web app container
-        uses: azure/webapps-deploy@v2
+      - name: Login to Azure Registry
+        uses: azure/docker-login@v1
         with:
-          app-name: ${{env.AZURE_WEBAPP_NAME}}
-          images: ${{env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{env.DOCKER_IMAGE_NAME}}:latest
+          login-server: ${{env.AZ_IMAGE_REGISTRY_URL}}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Azure logout
+      - name: Publish Images to Azure
         run: |
-          az logout
+          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ github.repository }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
+                     ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker push ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+
+      # - name: Azure logout
+      #   run: |
+          # az logout
     

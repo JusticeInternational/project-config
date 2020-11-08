@@ -10,6 +10,10 @@ Things that help us here:
 ## Build
 - Clone the Human Connections repo: `git clone https://github.com/JusticeInternational/Human-Connection`
 
-## Testing
+## Deploying to a Stage Environment
 
-## Deployment
+## Deployment to Production
+- We're using GitHub Actions to deploy this app.
+- First we need to deploy the backend with `.github/workflows/spinup-destroy.yml`
+- Then we need to setup ACR service [principles here](how-do-i-setup-acr.md)
+- Finally make changes and merge to master so we can deploy `config/docker-compose.yml` with AZ Web Apps
