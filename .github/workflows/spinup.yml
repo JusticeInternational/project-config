@@ -1,4 +1,4 @@
-name: Create Azure environment
+name: Spin Up Azure environment
 
 on:
   workflow_dispatch:

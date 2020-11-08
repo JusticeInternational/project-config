@@ -1,4 +1,4 @@
-name: Destroy Azure Webapp Environment
+name: Destroy Azure environment
 
 on:
   workflow_dispatch:
