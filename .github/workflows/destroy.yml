@@ -1,0 +1,36 @@
+name: Destroy Azure Webapp Environment
+
+on:
+  workflow_dispatch:
+
+env:
+  AZURE_RESOURCE_GROUP: redsol-RG
+  AZURE_APP_PLAN: actions-ttt-deployment
+  AZURE_LOCATION: '"East US"'
+  # Used in AZ_IMAGE_REGISTRY_URL: *.azurecr.io
+  AZ_IMAGE_REGISTRY_NAME: redsol
+  #################################################
+  ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
+  #################################################
+  #################################################
+  ### REPLACE USERNAME WITH GH USERNAME         ###
+  AZURE_WEBAPP_NAME: redsol-ttt-app
+  #################################################
+
+jobs:
+  destroy-azure-resources:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Destroy Azure environment
+        if: success()
+        run: |
+          az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
