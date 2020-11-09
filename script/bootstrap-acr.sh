@@ -3,7 +3,7 @@
 set -e
 # use this script to bootstrap the ACR service principal
 #
-# usage: TENANT_ID={tenant id} SUBSCRIPTION_ID={subscription id} AZ_USERNAME={user@emaildomain} bootstrap-acr.sh
+# usage: TENANT_ID={tenant id} SUBSCRIPTION_ID={subscription id} bootstrap-acr.sh
 
 # Modify for your environment.
 # ACR_NAME: The name of your Azure Container Registry
