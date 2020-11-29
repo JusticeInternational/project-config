@@ -1,10 +1,7 @@
 name: Production deployment
 
 on:
-  push:
-    branches:
-      - master
-      - update-ref
+  workflow_dispatch:
 
 env:
   # built from https://github.com/JusticeInternational/project-config/packages/290557?version=latest
@@ -58,23 +55,12 @@ jobs:
         run: |
           echo "::set-output name=docker-repo::$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]' )"
     
-      # - name: "Login via Azure CLI"
-      #   uses: azure/login@v1
-      #   with:
-      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Login to GitHub Registry
         uses: azure/docker-login@v1
         with:
           login-server: ${{env.IMAGE_REGISTRY_URL}}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull GPR Image and Tag for AZ
-        run: |
-          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
-                     ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
       - name: Login to Azure Registry
         uses: azure/docker-login@v1
@@ -85,9 +71,7 @@ jobs:
 
       - name: Publish Images to Azure
         run: |
+          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest && \
+          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
+                     ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest && \
           docker push ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-
-      # - name: Azure logout
-      #   run: |
-          # az logout
-    

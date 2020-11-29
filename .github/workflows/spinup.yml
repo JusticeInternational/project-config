@@ -45,6 +45,9 @@ jobs:
         run: |
           az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }} --multicontainer-config-type compose --multicontainer-config-file config/docker-compose.yml --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
       
+      #
+      # Note if a new registry is created, there is a manual step to setup the Azure 
+      # admin account following these steps: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication#admin-account
       - name: Create Az Registry
         if: success()
         run: |
@@ -59,6 +62,7 @@ jobs:
           echo "==> ${ACR_REGISTRY_ID}"
           az role assignment create --assignee "${P_ID}" --scope "${ACR_REGISTRY_ID}" --role acrpull
 
+      # Commented out for now since we're using ACR to deploy the app
       # - name: Configure webapp to use GitHub Packages
       #   if: success()
       #   run: |

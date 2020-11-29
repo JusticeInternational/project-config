@@ -1,0 +1,43 @@
+#
+# we're building docker images from JusticeInternational/Human-Connection/docker-compose.yml config
+# this is where we can get images ready for publishing.
+#
+name: Build Docker Images
+
+on:
+  push:
+    branches:
+      - master
+      - update-ref
+
+env:
+  # built from https://github.com/JusticeInternational/project-config/packages/290557?version=latest
+  DB_IMAGE: db
+  IMAGE_REGISTRY_URL: docker.pkg.github.com
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Get Docker Repo Name
+        id: get-repository
+        run: |
+          echo "::set-output name=docker-repo::$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]' )"
+
+      - name: Clone JusticeInternational/Human-Connection
+        run: |
+            echo "TODO: needs implementation"
+
+      - name: Build db image
+        run: |
+            echo "TODO: needs implementation"
+
+  #     - name: Save db image
+        # uses: mattdavis0351/actions/docker-gpr@1.3.0
+        # with:
+          # repo-token: ${{secrets.GITHUB_TOKEN}}
+          # image-name: ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
