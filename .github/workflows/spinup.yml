@@ -64,7 +64,7 @@ jobs:
                         WEBSITES_PORT=7474 \
              --name ${{ env.AZURE_WEBAPP_NAME }} \
              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} && \
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
   
       - name: Restart the webapp
         if: success()
