@@ -70,6 +70,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Pull GPR Image and Tag for AZ
+        run: |
+          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
+                     ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+
       - name: Login to Azure Registry
         uses: azure/docker-login@v1
         with:
@@ -79,9 +85,6 @@ jobs:
 
       - name: Publish Images to Azure
         run: |
-          docker pull ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          docker tag ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DOCKER_IMAGE_NAME }}:latest \
-                     ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
           docker push ${{ env.AZ_IMAGE_REGISTRY_URL }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
       # - name: Azure logout
