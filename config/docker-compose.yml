@@ -36,7 +36,7 @@ services:
     #     - "DEBUG=${DEBUG}"
 
 networks:
-  hc-network
+  hc-network:
 volumes:
   neo4j_data:
   # backend_node_modules:

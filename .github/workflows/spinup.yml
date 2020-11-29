@@ -62,6 +62,9 @@ jobs:
                         DOCKER_REGISTRY_SERVER_PASSWORD=${{ secrets.ACR_PASSWORD }} \
                         DOCKER_REGISTRY_SERVER_URL=${{ env.AZ_IMAGE_REGISTRY_URL }} \
                         WEBSITES_PORT=7474 \
+                        NEO4J_AUTH=none \
+                        NEO4J_dbms_security_procedures_unrestricted=algo.*,apoc.* \
+                        NEO4J_ACCEPT_LICENSE_AGREEMENT=yes \
              --name ${{ env.AZURE_WEBAPP_NAME }} \
              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
              --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
