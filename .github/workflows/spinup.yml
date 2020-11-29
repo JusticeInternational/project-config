@@ -9,6 +9,7 @@ env:
   AZURE_LOCATION: '"East US"'
   # Used in AZ_IMAGE_REGISTRY_URL: *.azurecr.io
   AZ_IMAGE_REGISTRY_NAME: redsol
+  AZ_IMAGE_REGISTRY_URL: redsol.azurecr.io
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
   #################################################
@@ -35,6 +36,14 @@ jobs:
         run: |
           az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
+      #
+      # Note if a new registry is created, there is a manual step to setup the Azure 
+      # admin account following these steps: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication#admin-account
+      - name: Create Az Registry
+        if: success()
+        run: |
+          az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic --admin-enabled true
+
       - name: Create Azure app service plan
         if: success()
         run: |
@@ -45,22 +54,34 @@ jobs:
         run: |
           az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }} --multicontainer-config-type compose --multicontainer-config-file config/docker-compose.yml --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
       
-      #
-      # Note if a new registry is created, there is a manual step to setup the Azure 
-      # admin account following these steps: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication#admin-account
-      - name: Create Az Registry
+      - name: Config webapp settings
         if: success()
         run: |
-          az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic --admin-enabled true
+          az webapp config appsettings set \
+             --settings DOCKER_REGISTRY_SERVER_USERNAME=${{ secrets.ACR_USERNAME }} \
+                        DOCKER_REGISTRY_SERVER_PASSWORD=${{ secrets.ACR_PASSWORD }} \
+                         DOCKER_REGISTRY_SERVER_URL=${{ env.AZ_IMAGE_REGISTRY_URL }} \
+             --name ${{ env.AZURE_WEBAPP_NAME }} \
+             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  
+      - name: Restart the webapp
+        if: success()
+        run: |
+          az webapp restart \
+             --name ${{ env.AZURE_WEBAPP_NAME }} \
+             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
-      - name: Create webapp identity
-        if: success()
-        run: |
-          P_ID=$(az webapp identity assign --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --query principalId --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --output tsv)
-          ACR_REGISTRY_ID=$(az acr show --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --query id --output tsv --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}})
-          echo "==> ${P_ID}"
-          echo "==> ${ACR_REGISTRY_ID}"
-          az role assignment create --assignee "${P_ID}" --scope "${ACR_REGISTRY_ID}" --role acrpull
+      # TODO: remove, this method of deployment wasn't working so we might not need it. Instead we'll set the app settings
+      # - name: Create webapp identity
+      #   if: success()
+      #   run: |
+      #     P_ID=$(az webapp identity assign --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --query principalId --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --output tsv)
+      #     ACR_REGISTRY_ID=$(az acr show --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --query id --output tsv --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}})
+      #     echo "==> ${P_ID}"
+      #     echo "==> ${ACR_REGISTRY_ID}"
+      #     az role assignment create --assignee "${P_ID}" --scope "${ACR_REGISTRY_ID}" --role acrpull
 
       # Commented out for now since we're using ACR to deploy the app
       # - name: Configure webapp to use GitHub Packages
