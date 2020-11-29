@@ -60,10 +60,11 @@ jobs:
           az webapp config appsettings set \
              --settings DOCKER_REGISTRY_SERVER_USERNAME=${{ secrets.ACR_USERNAME }} \
                         DOCKER_REGISTRY_SERVER_PASSWORD=${{ secrets.ACR_PASSWORD }} \
-                         DOCKER_REGISTRY_SERVER_URL=${{ env.AZ_IMAGE_REGISTRY_URL }} \
+                        DOCKER_REGISTRY_SERVER_URL=${{ env.AZ_IMAGE_REGISTRY_URL }} \
+                        WEBSITES_PORT=7474 \
              --name ${{ env.AZURE_WEBAPP_NAME }} \
              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} && \
   
       - name: Restart the webapp
         if: success()
