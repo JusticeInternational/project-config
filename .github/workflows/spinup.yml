@@ -92,6 +92,7 @@ jobs:
       
       #
       # we need an azure storage account for persistent files, howto's; https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-cli
+      # az storage account create ... --enable-large-file-share 
       - name: Azure Storage
         if: success()
         run: |
@@ -104,8 +105,7 @@ jobs:
             --resource-group ${{ env.AZ_STORAGE_RG }} \
             --location ${{ env.AZURE_LOCATION }} \
             --sku Standard_RAGRS \
-            --kind StorageV2 \
-            --enable-large-file-share && \
+            --kind StorageV2 && \
           export storageAccountKey=$(az storage account keys list \
                   --resource-group ${{ env.AZ_STORAGE_RG }} \
                   --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
