@@ -52,7 +52,12 @@ jobs:
       - name: Create webapp resource
         if: success()
         run: |
-          az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --plan ${{ env.AZURE_APP_PLAN }} --name ${{ env.AZURE_WEBAPP_NAME }} --multicontainer-config-type compose --multicontainer-config-file config/docker-compose.yml --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          az webapp create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+             --plan ${{ env.AZURE_APP_PLAN }} \
+             --name ${{ env.AZURE_WEBAPP_NAME }} \
+             --multicontainer-config-type compose \
+             --multicontainer-config-file config/docker-compose.yml \
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
       
       - name: Config webapp settings
         if: success()
@@ -67,7 +72,13 @@ jobs:
                         NEO4J_ACCEPT_LICENSE_AGREEMENT=yes \
              --name ${{ env.AZURE_WEBAPP_NAME }} \
              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} && \
+          az webapp config container set \
+             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+             --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} \
+             --name ${{ env.AZURE_WEBAPP_NAME }} \
+             --multicontainer-config-type compose \
+             --multicontainer-config-file config/docker-compose.yml
   
       - name: Restart the webapp
         if: success()
