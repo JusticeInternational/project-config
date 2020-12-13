@@ -13,8 +13,8 @@ services:
         - 7687:7687
         - 7474:80
       restart: always
-      volumes:
-        - ${WEBAPP_STORAGE_HOME}/data:/data
+      # volumes:
+        # - ${WEBAPP_STORAGE_HOME}/data:/data
     # backend:
     #   image: humanconnection/nitro-backend:latest
     #   networks:

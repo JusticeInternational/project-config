@@ -12,6 +12,7 @@ env:
   AZ_IMAGE_REGISTRY_URL: redsol.azurecr.io
   AZ_STORAGE_RG: redsol-storage-rg
   AZ_STORAGE_AC_NAME: redsolst
+  AZ_SHARE_NAME: redneodata
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
   #################################################
@@ -51,22 +52,6 @@ jobs:
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} \
             --sku Basic --admin-enabled true
-      
-      #
-      # we need an azure storage account for persistent files, howto's; https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-cli
-      - name: Azure Storage
-        if: success()
-        run: |
-          az group create \
-            --name ${{ env.AZ_STORAGE_RG }} \
-            --location ${{ env.AZURE_LOCATION }} \
-            --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }} && \
-          az storage account create \
-            --name ${{ env.AZ_STORAGE_AC_NAME }} \
-            --resource-group ${{ env.AZ_STORAGE_RG }} \
-            --location ${{ env.AZURE_LOCATION }} \
-            --sku Standard_RAGRS \
-            --kind StorageV2
 
       - name: Create Azure app service plan
         if: success()
@@ -103,7 +88,44 @@ jobs:
              --name ${{ env.AZURE_WEBAPP_NAME }} \
              --multicontainer-config-type compose \
              --multicontainer-config-file config/docker-compose.yml
-  
+
+      
+      #
+      # we need an azure storage account for persistent files, howto's; https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-cli
+      - name: Azure Storage
+        if: success()
+        run: |
+          az group create \
+            --name ${{ env.AZ_STORAGE_RG }} \
+            --location ${{ env.AZURE_LOCATION }} \
+            --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }} && \
+          az storage account create \
+            --name ${{ env.AZ_STORAGE_AC_NAME }} \
+            --resource-group ${{ env.AZ_STORAGE_RG }} \
+            --location ${{ env.AZURE_LOCATION }} \
+            --sku Standard_RAGRS \
+            --kind StorageV2 \
+            --enable-large-file-share && \
+          export storageAccountKey=$(az storage account keys list \
+                  --resource-group ${{ env.AZ_STORAGE_RG }} \
+                  --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
+                  --query "[0].value" | tr -d '"') && \
+          az storage share create \
+              --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
+              --account-key $storageAccountKey \
+              --name ${{ env.AZ_SHARE_NAME }} \
+              --quota 1024 \
+              --enabled-protocols SMB && \
+          az webapp config storage-account add \
+              --resource-group ${{ env.AZ_STORAGE_RG }}  \
+              --name  ${{ env.AZURE_WEBAPP_NAME }} \
+              --custom-id AzureShare \
+              --storage-type AzureFiles \
+              --share-name ${{ env.AZ_SHARE_NAME }} \
+              --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
+              --access-key $storageAccountKey \
+              --mount-path /data
+
       - name: Restart the webapp
         if: success()
         run: |
