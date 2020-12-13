@@ -11,7 +11,7 @@ env:
   AZ_IMAGE_REGISTRY_NAME: redsol
   AZ_IMAGE_REGISTRY_URL: redsol.azurecr.io
   AZ_STORAGE_RG: redsol-storage-rg
-  AZ_STORAGE_AC_NAME: redsol-storage
+  AZ_STORAGE_AC_NAME: redsolst
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
   #################################################
