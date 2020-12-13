@@ -114,8 +114,7 @@ jobs:
               --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
               --account-key $storageAccountKey \
               --name ${{ env.AZ_SHARE_NAME }} \
-              --quota 1024 \
-              --enabled-protocols SMB && \
+              --quota 1024 && \
           az webapp config storage-account add \
               --resource-group ${{ env.AZ_STORAGE_RG }}  \
               --name  ${{ env.AZURE_WEBAPP_NAME }} \
