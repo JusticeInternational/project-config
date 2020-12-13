@@ -10,6 +10,8 @@ env:
   # Used in AZ_IMAGE_REGISTRY_URL: *.azurecr.io
   AZ_IMAGE_REGISTRY_NAME: redsol
   AZ_IMAGE_REGISTRY_URL: redsol.azurecr.io
+  AZ_STORAGE_RG: redsol-storage-rg
+  AZ_STORAGE_AC_NAME: redsol-storage
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
   #################################################
@@ -34,7 +36,10 @@ jobs:
       - name: Create Azure resource group
         if: success()
         run: |
-          az group create --location ${{env.AZURE_LOCATION}} --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          az group create \
+            --name ${{env.AZURE_RESOURCE_GROUP}} \
+            --location ${{env.AZURE_LOCATION}} \
+            --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
       #
       # Note if a new registry is created, there is a manual step to setup the Azure 
@@ -42,7 +47,26 @@ jobs:
       - name: Create Az Registry
         if: success()
         run: |
-          az acr create --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} --sku Basic --admin-enabled true
+          az acr create \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --name ${{ env.AZ_IMAGE_REGISTRY_NAME }} \
+            --sku Basic --admin-enabled true
+      
+      #
+      # we need an azure storage account for persistent files, howto's; https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-cli
+      - name: Azure Storage
+        if: success()
+        run: |
+          az group create \
+            --name $${{ env.AZ_STORAGE_RG }} \
+            --location ${{env.AZURE_LOCATION}} \
+            --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} && \
+          az storage account create \
+            --name $${{ env.AZ_STORAGE_AC_NAME }} \
+            --resource-group $${{ env.AZ_STORAGE_RG }} \
+            --location ${{env.AZURE_LOCATION}} \
+            --sku Standard_RAGRS \
+            --kind StorageV2
 
       - name: Create Azure app service plan
         if: success()

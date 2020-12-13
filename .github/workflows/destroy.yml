@@ -9,6 +9,8 @@ env:
   AZURE_LOCATION: '"East US"'
   # Used in AZ_IMAGE_REGISTRY_URL: *.azurecr.io
   AZ_IMAGE_REGISTRY_NAME: redsol
+  AZ_STORAGE_RG: redsol-storage-rg
+  AZ_STORAGE_AC_NAME: redsol-storage
   #################################################
   ### USER PROVIDED VALUES ARE REQUIRED BELOW   ###
   #################################################
@@ -34,3 +36,10 @@ jobs:
         if: success()
         run: |
           az group delete --name ${{env.AZURE_RESOURCE_GROUP}} --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} --yes
+
+      - name: Destory Storage Account
+        if: success()
+        run: |
+          az storage account delete \
+            --name ${{ env.AZ_STORAGE_AC_NAME }} \
+            --resource-group ${{ env.AZ_STORAGE_RG }}
