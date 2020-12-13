@@ -96,7 +96,6 @@ jobs:
       - name: Azure Storage
         if: success()
         run: |
-          set -x -v;
           az group create \
             --name ${{ env.AZ_STORAGE_RG }} \
             --location ${{ env.AZURE_LOCATION }} \
@@ -124,7 +123,17 @@ jobs:
               --share-name ${{ env.AZ_SHARE_NAME }} \
               --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
               --access-key $storageAccountKey \
+              --mount-path /data || \
+          az webapp config storage-account update \
+              --resource-group ${{ env.AZURE_RESOURCE_GROUP }}  \
+              --name  ${{ env.AZURE_WEBAPP_NAME }} \
+              --custom-id AzureShare \
+              --storage-type AzureFiles \
+              --share-name ${{ env.AZ_SHARE_NAME }} \
+              --account-name ${{ env.AZ_STORAGE_AC_NAME }} \
+              --access-key $storageAccountKey \
               --mount-path /data
+             
 
       - name: Restart the webapp
         if: success()
