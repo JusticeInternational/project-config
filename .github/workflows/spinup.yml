@@ -59,13 +59,13 @@ jobs:
         run: |
           set -x -v;
           az group create \
-            --name $${{ env.AZ_STORAGE_RG }} \
-            --location ${{env.AZURE_LOCATION}} \
-            --subscription ${{secrets.AZURE_SUBSCRIPTION_ID}} && \
+            --name ${{ env.AZ_STORAGE_RG }} \
+            --location ${{ env.AZURE_LOCATION }} \
+            --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }} && \
           az storage account create \
-            --name $${{ env.AZ_STORAGE_AC_NAME }} \
-            --resource-group $${{ env.AZ_STORAGE_RG }} \
-            --location ${{env.AZURE_LOCATION}} \
+            --name ${{ env.AZ_STORAGE_AC_NAME }} \
+            --resource-group ${{ env.AZ_STORAGE_RG }} \
+            --location ${{ env.AZURE_LOCATION }} \
             --sku Standard_RAGRS \
             --kind StorageV2
 
