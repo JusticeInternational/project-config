@@ -96,6 +96,7 @@ jobs:
       - name: Azure Storage
         if: success()
         run: |
+          set -x -v;
           az group create \
             --name ${{ env.AZ_STORAGE_RG }} \
             --location ${{ env.AZURE_LOCATION }} \
