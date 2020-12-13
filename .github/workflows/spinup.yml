@@ -117,7 +117,7 @@ jobs:
               --name ${{ env.AZ_SHARE_NAME }} \
               --quota 1024 && \
           az webapp config storage-account add \
-              --resource-group ${{ env.AZ_STORAGE_RG }}  \
+              --resource-group ${{ env.AZURE_RESOURCE_GROUP }}  \
               --name  ${{ env.AZURE_WEBAPP_NAME }} \
               --custom-id AzureShare \
               --storage-type AzureFiles \
