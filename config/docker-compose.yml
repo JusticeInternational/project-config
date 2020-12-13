@@ -14,7 +14,7 @@ services:
         - 7474:80
       restart: always
       volumes:
-        - neo4j_data:/data
+        - ${WEBAPP_STORAGE_HOME}/data:/data
     # backend:
     #   image: humanconnection/nitro-backend:latest
     #   networks:
@@ -37,7 +37,5 @@ services:
 
 networks:
   hc-network:
-volumes:
-  neo4j_data:
   # backend_node_modules:
   # uploads:
