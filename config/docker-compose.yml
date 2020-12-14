@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
     neo4j:
-      image: redsol.azurecr.io/db:latest
+      image: redsol.azurecr.io/justiceinternational/project-config/db:latest
       networks:
         - hc-network
       environment:
