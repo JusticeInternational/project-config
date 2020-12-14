@@ -41,8 +41,9 @@ jobs:
           docker tag humanconnection/neo4j:latest ${{ env.ACR_REGISTRY_URL }}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
 
 #
-# TODO we need an if case statement that only pushes when this merges to the default branch
+# push changes to the registry once merged
       - name: Save db image
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/stable' }}
         run: |
           echo ${{ env.GITHUB_TOKEN }} | docker login ${{ env.IMAGE_REGISTRY_URL }} --password-stdin --username ${{ github.actor }} && \
           echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ env.ACR_REGISTRY_URL }} --password-stdin --username ${{ secrets.ACR_USERNAME }}  && \
