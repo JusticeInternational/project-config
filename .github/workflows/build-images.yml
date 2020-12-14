@@ -42,7 +42,7 @@ jobs:
 
       - name: Save db image
         run: |
-          echo ${{ env.GITHUB_TOKEN }} | docker login ${{ env.IMAGE_REGISTRY_URL }} --password-stdin --usrname ${{ github.actor }} && \
-          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ env.ACR_REGISTRY_URL }} --password-stdin --usrname ${{ secrets.ACR_USERNAME }}  && \
+          echo ${{ env.GITHUB_TOKEN }} | docker login ${{ env.IMAGE_REGISTRY_URL }} --password-stdin --username ${{ github.actor }} && \
+          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ env.ACR_REGISTRY_URL }} --password-stdin --username ${{ secrets.ACR_USERNAME }}  && \
           docker push ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
           docker push ${{ env.ACR_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
