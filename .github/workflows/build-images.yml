@@ -13,6 +13,7 @@ on:
 env:
   # built from https://github.com/JusticeInternational/project-config/packages/290557?version=latest
   DB_IMAGE: db
+  ACR_REGISTRY_URL: redsol.azurecr.io
   IMAGE_REGISTRY_URL: docker.pkg.github.com
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
@@ -35,9 +36,12 @@ jobs:
       - name: Build db image
         run: |
           docker-compose build neo4j
-          docker tag humanconnection/neo4j:latest ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
+          docker tag humanconnection/neo4j:latest ${{ env.IMAGE_REGISTRY_URL }}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
+          docker tag humanconnection/neo4j:latest ${{ env.ACR_REGISTRY_URL }}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
 
       - name: Save db image
         run: |
-          echo "${{ env.GITHUB_TOKEN }} | docker login ${{ env.IMAGE_REGISTRY_URL }} --password-stdin --usrname ${{ github.actor }}
+          echo ${{ env.GITHUB_TOKEN }} | docker login ${{ env.IMAGE_REGISTRY_URL }} --password-stdin --usrname ${{ github.actor }} && \
+          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ env.ACR_REGISTRY_URL }} --password-stdin --usrname ${{ secrets.ACR_USERNAME }}  && \
           docker push ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
+          docker push ${{ env.ACR_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
