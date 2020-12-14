@@ -30,14 +30,14 @@ jobs:
 
       - name: Clone JusticeInternational/Human-Connection
         run: |
-            echo "TODO: needs implementation"
+          git clone https://github.com/JusticeInternational/Human-Connection
 
       - name: Build db image
         run: |
-            echo "TODO: needs implementation"
+          docker-compose build neo4j
+          docker tag humanconnection/neo4j:latest ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
 
-  #     - name: Save db image
-        # uses: mattdavis0351/actions/docker-gpr@1.3.0
-        # with:
-          # repo-token: ${{secrets.GITHUB_TOKEN}}
-          # image-name: ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
+      - name: Save db image
+        run: |
+          echo "${{ env.GITHUB_TOKEN }} | docker login ${{ env.IMAGE_REGISTRY_URL }} --password-stdin --usrname ${{ github.actor }}
+          docker push ${{ env.IMAGE_REGISTRY_URL}}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
