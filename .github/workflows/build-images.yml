@@ -35,6 +35,7 @@ jobs:
 
       - name: Build db image
         run: |
+          cd Human-Connection
           docker-compose build neo4j
           docker tag humanconnection/neo4j:latest ${{ env.IMAGE_REGISTRY_URL }}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
           docker tag humanconnection/neo4j:latest ${{ env.ACR_REGISTRY_URL }}/${{ steps.get-repository.outputs.docker-repo }}/${{ env.DB_IMAGE }}:latest
