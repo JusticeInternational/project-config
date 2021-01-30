@@ -43,7 +43,9 @@ az group create --name $RESOURCE_GROUP \
 
 az aks create -g $RESOURCE_GROUP -n $CLUSTER_NAME \
               --node-vm-size $VM_SIZE \
-              --nodecount $NODE_COUNT \
+              --load-balancer-sku Basic \
+              --no-ssh-key \
+              --node-count $NODE_COUNT \
               --enable-managed-identity \
               --subscription $SUBSCRIPTION_ID
 
