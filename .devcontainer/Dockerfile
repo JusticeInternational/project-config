@@ -46,7 +46,7 @@ RUN echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf && \
     && cd /tmp \
     && curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
     && curl -LO "https://dl.k8s.io/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" \
-    && echo $(cat kubectl.sha256) kubectl | sha256sum -c \
+    # && echo $(cat kubectl.sha256) kubectl | sha256sum -c \
     && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
     && kubectl version --client \
     && rm -f /tmp/kubectl* \
