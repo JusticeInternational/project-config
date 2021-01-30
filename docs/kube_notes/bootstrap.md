@@ -2,6 +2,8 @@
 
 We're experimenting with kube for deployment. These notes will have commands we're using to set that up.
 
+TODO: update docs with [aad steps](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli#create-server-application)
+
 ## Env Explanation
 - We are setup East US for SA support
 - We are using a small 3 node cluster with B series nodes
@@ -95,5 +97,45 @@ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
             --subscription $SUBSCRIPTION_ID
 ```
 
+### Login and Test
+```
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
+```
 
 
+#### Login as admin
+```
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin
+```
+
+#### List system containers
+
+```
+kubectl get deployments --namespace kube-system
+```
+
+#### Configure Cluster RBAC
+
+```
+GROUP_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)
+cat << EOF | kubectl apply -f -
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dev-admin
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+# from ;  
+- kind: Group
+  namespace: default
+  name: $GROUP_ID
+EOF
+```
+#### Login as normal user
+```
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
+```
