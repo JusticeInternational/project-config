@@ -39,29 +39,29 @@ RUN echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf && \
        sudo \
        vim \
        bash \
-       zsh && \
+       zsh \
     #
     # install kubectl
     #
-    cd /tmp && \
-    curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
-    curl -LO "https://dl.k8s.io/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" && \
-    echo $(cat kubectl.sha256) kubectl | sha256sum -c && \
-    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
-    kubectl version --client && \
-    rm -f /tmp/kubectl* && \
+    && cd /tmp \
+    && curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+    && curl -LO "https://dl.k8s.io/${KUBECTL_VERSION}/bin/linux/amd64/kubectl.sha256" \
+    && echo $(cat kubectl.sha256) kubectl | sha256sum -c \
+    && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
+    && kubectl version --client \
+    && rm -f /tmp/kubectl* \
     #
     # install az cli
     #
-    curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
-    gpg --dearmor | \
-    tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null && \
-    AZ_REPO=$(lsb_release -cs) && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ ${AZ_REPO} main" | \
-    tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-get update -qq && \
-    apt-get install azure-cli && \
-    az version && \
+    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+       gpg --dearmor | \
+       tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null \
+    && AZ_REPO=$(lsb_release -cs) \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ ${AZ_REPO} main" | \
+       tee /etc/apt/sources.list.d/azure-cli.list \
+    && apt-get update -qq \
+    && apt-get install azure-cli \
+    && az version \
     #
     # 
     && chmod +x /bin/entrypoint.sh \
