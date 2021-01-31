@@ -6,7 +6,7 @@ Some docs on how to add [AAD steps](https://docs.microsoft.com/en-us/azure/aks/a
 
 ## Env Explanation
 - We are setup East US for SA support
-- We are using a small 3 node cluster with B series nodes
+- We are using a small 1 node cluster with B series nodes to save for development but we should use 3 in production
 - We're linking the dev AD group
 
 ## Commands
@@ -78,9 +78,9 @@ az ad app permission admin-consent --id  $serverApplicationId
 
 ```
 clientApplicationId=$(az ad app create \
-    --display-name "${aksname}Client" \
+    --display-name "${CLUSTER_NAME}Client" \
     --native-app \
-    --reply-urls "https://${aksname}Client" \
+    --reply-urls "https://${CLUSTER_NAME}Client" \
     --query appId -o tsv)
 
 az ad sp create --id $clientApplicationId
