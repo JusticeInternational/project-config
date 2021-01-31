@@ -2,7 +2,7 @@
 
 We're experimenting with kube for deployment. These notes will have commands we're using to set that up.
 
-TODO: update docs with [aad steps](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli#create-server-application)
+Some docs on how to add [AAD steps](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli#create-server-application)
 
 ## Env Explanation
 - We are setup East US for SA support
@@ -16,9 +16,9 @@ TODO: update docs with [aad steps](https://docs.microsoft.com/en-us/azure/aks/az
 RESOURCE_GROUP=redsol-RG
 SUBSCRIPTION_ID=8b91797a-2975-47ad-95dd-5767ebf67c90
 CLUSTER_NAME=redsol
-LOCATION=eastus
+LOCATION=EastUS
 VM_SIZE="Standard_B2s"
-NODE_COUNT=3
+NODE_COUNT=1
 APPDEV_NAME="dev"
 ACR_NAME=redsolacr
 ```
@@ -37,19 +37,82 @@ az login
 az account set -s "${SUBSCRIPTION_ID}"
 ```
 
+### Create AD app to integrate
+
+```
+# Create the Azure AD application
+serverApplicationId=$(az ad app create \
+    --display-name "${CLUSTER_NAME}Server" \
+    --identifier-uris "https://${CLUSTER_NAME}Server" \
+    --query appId -o tsv)
+
+# Update the application group membership claims
+az ad app update --id $serverApplicationId --set groupMembershipClaims=All
+```
+
+### Create Service Princapl
+
+```
+# Create a service principal for the Azure AD application
+az ad sp create --id $serverApplicationId
+
+# Get the service principal secret
+serverApplicationSecret=$(az ad sp credential reset \
+    --name $serverApplicationId \
+    --credential-description "AKSPassword" \
+    --query password -o tsv)
+```
+
+### Creare AD Permissions
+```
+az ad app permission add \
+    --id $serverApplicationId \
+    --api 00000003-0000-0000-c000-000000000000 \
+    --api-permissions e1fe6dd8-ba31-4d61-89e7-88639da4683d=Scope 06da0dbc-49e2-44d2-8312-53f166ab848a=Scope 7ab1d382-f21e-4acd-a863-ba3e13f7da61=Role
+
+az ad app permission grant --id $serverApplicationId --api 00000003-0000-0000-c000-000000000000
+az ad app permission admin-consent --id  $serverApplicationId
+```
+
+### Create an AD App and it's Service Principal
+
+```
+clientApplicationId=$(az ad app create \
+    --display-name "${aksname}Client" \
+    --native-app \
+    --reply-urls "https://${aksname}Client" \
+    --query appId -o tsv)
+
+az ad sp create --id $clientApplicationId
+
+oAuthPermissionId=$(az ad app show --id $serverApplicationId --query "oauth2Permissions[0].id" -o tsv)
+
+az ad app permission add --id $clientApplicationId --api $serverApplicationId --api-permissions ${oAuthPermissionId}=Scope
+az ad app permission grant --id $clientApplicationId --api $serverApplicationId
+```
+
+
 ### Create AZ cluster
 ```
 az group create --name $RESOURCE_GROUP \
                 --location $LOCATION \
                 --subscription $SUBSCRIPTION_ID
 
-az aks create -g $RESOURCE_GROUP -n $CLUSTER_NAME \
-              --node-vm-size $VM_SIZE \
-              --load-balancer-sku Basic \
-              --no-ssh-key \
-              --node-count $NODE_COUNT \
-              --enable-managed-identity \
-              --subscription $SUBSCRIPTION_ID
+tenantId=$(az account show --query tenantId -o tsv)
+
+az aks create \
+    -g $RESOURCE_GROUP \
+    --name $CLUSTER_NAME \
+    --node-vm-size $VM_SIZE \
+    --node-count $NODE_COUNT \
+    --load-balancer-sku Basic \
+    --no-ssh-key \
+    --enable-managed-identity \
+    --aad-server-app-id $serverApplicationId \
+    --aad-server-app-secret $serverApplicationSecret \
+    --aad-client-app-id $clientApplicationId \
+    --aad-tenant-id $tenantId \
+    --subscription $SUBSCRIPTION_ID
 
 az aks show -g $RESOURCE_GROUP -n $CLUSTER_NAME \
             --query "identity" \
@@ -97,12 +160,6 @@ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
             --subscription $SUBSCRIPTION_ID
 ```
 
-### Login and Test
-```
-az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
-```
-
-
 #### Login as admin
 ```
 az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin
@@ -117,6 +174,8 @@ kubectl get deployments --namespace kube-system
 #### Configure Cluster RBAC
 
 ```
+CURRENT_ID=$(az ad signed-in-user show --query userPrincipalName -o tsv)
+
 GROUP_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)
 cat << EOF | kubectl apply -f -
 ---
@@ -133,9 +192,19 @@ subjects:
 - kind: Group
   namespace: default
   name: $GROUP_ID
+- kind: User
+  namespace: default
+  name: $CURRENT_ID
 EOF
 ```
-#### Login as normal user
+
+### Login and Test
+
 ```
-az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --overwrite-existing --subscription $SUBSCRIPTION_ID
+```
+
+```
+kubectl get deployments --namespace default
+kubectl get pods --all-namespaces
 ```
