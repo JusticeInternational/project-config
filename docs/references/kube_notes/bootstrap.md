@@ -103,11 +103,12 @@ From [this article](https://docs.microsoft.com/en-us/azure/aks/configure-azure-c
 
 ```
 az network vnet create \
-    --resource-group myResourceGroup \
+    --resource-group $RESOURCE_GROUP \
     --name "${RESOURCE_GROUP}_vnet" \
     --address-prefixes 192.168.0.0/16 \
     --subnet-name "${RESOURCE_GROUP}_subnet" \
-    --subnet-prefix 192.168.1.0/24
+    --subnet-prefix 192.168.1.0/24 \
+    --subscription $SUBSCRIPTION_ID
 ```
 
 ```
@@ -126,7 +127,7 @@ SUBNET_ID=$(az network vnet subnet show \
 
 Give permissions
 ```
-APP_ID=$(az ad sp create-for-rbac --skip-assignment | jq '.appId')
+APP_ID=$(az ad app show --id $serverApplicationId --query "appId" -o tsv)
 az role assignment create --assignee $APP_ID --scope $VNET_ID --role "Network Contributor"
 ```
 
@@ -134,6 +135,9 @@ az role assignment create --assignee $APP_ID --scope $VNET_ID --role "Network Co
 ```
 
 tenantId=$(az account show --query tenantId -o tsv)
+
+az identity create --name "${CLUSTER_NAME}_id" --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
+ASSIGN_ID=$(az identity list --query "[].{name:name, Id:id}"|jq -r '.[] | select(.name=="'${CLUSTER_NAME}_id'")|.Id')
 
 az aks create \
     -g $RESOURCE_GROUP \
@@ -150,9 +154,12 @@ az aks create \
     --aad-tenant-id $tenantId \
     --network-plugin azure \
     --vnet-subnet-id $SUBNET_ID \
+    --assign-identity $ASSIGN_ID \
     --docker-bridge-address 172.17.0.1/16 \
     --dns-service-ip 10.2.0.10 \
     --service-cidr 10.2.0.0/24 \
+    --service-principal msi \
+    --client-secret null \
     --subscription $SUBSCRIPTION_ID
 
 az aks show -g $RESOURCE_GROUP -n $CLUSTER_NAME \
@@ -188,6 +195,7 @@ az role assignment create --assignee $APPDEV_ID --role "Azure Kubernetes Service
 ```
 
 ### Setup [ACR Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal) for Containers
+- [note about bug](https://github.com/Azure/AKS/issues/1517#issuecomment-634551363)
 ```
 az acr create -g $RESOURCE_GROUP --name $ACR_NAME \
               --sku Basic \
