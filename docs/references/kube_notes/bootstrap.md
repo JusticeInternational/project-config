@@ -90,28 +90,76 @@ oAuthPermissionId=$(az ad app show --id $serverApplicationId --query "oauth2Perm
 az ad app permission add --id $clientApplicationId --api $serverApplicationId --api-permissions ${oAuthPermissionId}=Scope
 az ad app permission grant --id $clientApplicationId --api $serverApplicationId
 ```
+### Create Resource Group
 
-
-### Create AZ cluster
 ```
 az group create --name $RESOURCE_GROUP \
                 --location $LOCATION \
                 --subscription $SUBSCRIPTION_ID
+```
+
+### Setup Network
+From [this article](https://docs.microsoft.com/en-us/azure/aks/configure-azure-cni), we'll setup the network:
+
+```
+az network vnet create \
+    --resource-group $RESOURCE_GROUP \
+    --name "${RESOURCE_GROUP}_vnet" \
+    --address-prefixes 192.168.0.0/16 \
+    --subnet-name "${RESOURCE_GROUP}_subnet" \
+    --subnet-prefix 192.168.1.0/24 \
+    --subscription $SUBSCRIPTION_ID
+```
+
+```
+
+VNET_ID=$(az network vnet show \
+            --resource-group ${RESOURCE_GROUP} \
+            --name "${RESOURCE_GROUP}_vnet" --query id -o tsv \
+            --subscription $SUBSCRIPTION_ID)
+SUBNET_ID=$(az network vnet subnet show \
+              --resource-group ${RESOURCE_GROUP} \
+              --vnet-name "${RESOURCE_GROUP}_vnet" \
+              --name "${RESOURCE_GROUP}_subnet" \
+              --query id -o tsv \
+              --subscription $SUBSCRIPTION_ID)
+```
+
+Give permissions
+```
+APP_ID=$(az ad app show --id $serverApplicationId --query "appId" -o tsv)
+az role assignment create --assignee $APP_ID --scope $VNET_ID --role "Network Contributor"
+```
+
+### Create AZ cluster
+```
 
 tenantId=$(az account show --query tenantId -o tsv)
+
+az identity create --name "${CLUSTER_NAME}_id" --resource-group $RESOURCE_GROUP --subscription $SUBSCRIPTION_ID
+ASSIGN_ID=$(az identity list --query "[].{name:name, Id:id}"|jq -r '.[] | select(.name=="'${CLUSTER_NAME}_id'")|.Id')
 
 az aks create \
     -g $RESOURCE_GROUP \
     --name $CLUSTER_NAME \
     --node-vm-size $VM_SIZE \
     --node-count $NODE_COUNT \
-    --load-balancer-sku Basic \
+    --load-balancer-sku basic \
+    --vm-set-type AvailabilitySet \
     --no-ssh-key \
     --enable-managed-identity \
     --aad-server-app-id $serverApplicationId \
     --aad-server-app-secret $serverApplicationSecret \
     --aad-client-app-id $clientApplicationId \
     --aad-tenant-id $tenantId \
+    --network-plugin azure \
+    --vnet-subnet-id $SUBNET_ID \
+    --assign-identity $ASSIGN_ID \
+    --docker-bridge-address 172.17.0.1/16 \
+    --dns-service-ip 10.2.0.10 \
+    --service-cidr 10.2.0.0/24 \
+    --service-principal msi \
+    --client-secret null \
     --subscription $SUBSCRIPTION_ID
 
 az aks show -g $RESOURCE_GROUP -n $CLUSTER_NAME \
@@ -147,6 +195,7 @@ az role assignment create --assignee $APPDEV_ID --role "Azure Kubernetes Service
 ```
 
 ### Setup [ACR Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal) for Containers
+- [note about bug](https://github.com/Azure/AKS/issues/1517#issuecomment-634551363)
 ```
 az acr create -g $RESOURCE_GROUP --name $ACR_NAME \
               --sku Basic \
@@ -159,7 +208,32 @@ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
             --attach-acr $ACR_NAME \
             --subscription $SUBSCRIPTION_ID
 ```
-
+##### Workaround for failure
+Since we're getting this failure:
+```
+❯ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
+            --attach-acr $ACR_NAME \
+            --subscription $SUBSCRIPTION_ID
+Waiting for AAD role to propagate[################################    ]  90.0000%Could not create a role assignment for ACR. Are you an Owner on this 
+```
+We're going to work around it by setting up username and password for pulls to registry.
+1. Login to portal and enable Access Keys for username and password
+1. Record the username and password in two env vars and set the registry url:
+   ```
+   export AKS_DOCKER_USERNAME=<username>
+   export AKS_DOCKER_PASSWORD=<password>
+   export ACR_REGISTRY="${ACR_NAME}.azurecr.io"
+   ```
+2. Login to az command line; `az login`
+3. Login to aks : `az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin`
+4. Use kubectl to create a secret ([as described here](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes)):
+   ```
+   kubectl --namespace human-connection \
+    create secret docker-registry acrregistrycreds \
+    --docker-server="${ACR_REGISTRY}" \
+    --docker-password="${AKS_DOCKER_PASSWORD}" \
+    --docker-username="${AKS_DOCKER_USERNAME}"
+   ```
 #### Login as admin
 ```
 az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin
@@ -208,3 +282,25 @@ az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --o
 kubectl get deployments --namespace default
 kubectl get pods --all-namespaces
 ```
+
+### Setting up AKS ingress controller
+Lets setup inbound access to services with [these instructions](https://docs.microsoft.com/en-us/azure/aks/ingress-basic).
+
+```
+# Create a namespace for your ingress resources
+kubectl create namespace ingress-basic
+
+# Add the ingress-nginx repository
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+# Use Helm to deploy an NGINX ingress controller
+helm install nginx-ingress ingress-nginx/ingress-nginx \
+    --namespace ingress-basic \
+    --set controller.replicaCount=2 \
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux
+```
+
+#### Test ingress
+Test it with [this app demo](https://docs.microsoft.com/en-us/azure/aks/ingress-basic#run-demo-applications).
