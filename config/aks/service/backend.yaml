@@ -6,6 +6,7 @@ metadata:
   labels:
     human-connection.org/selector: deployment-human-connection-backend
 spec:
+  type: LoadBalancer
   ports:
     - name: web
       port: 4000

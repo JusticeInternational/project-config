@@ -30,14 +30,17 @@ spec:
         human-connection.org/selector: deployment-human-connection-backend
       name: backend
     spec:
+      imagePullSecrets:
+      - name: acrregistrycreds
+
       containers:
       - envFrom:
         - configMapRef:
             name: configmap
         - secretRef:
             name: human-connection
-        image: redsolacr.azurecr.io/humanconnection/nitro-backend:latest
-        imagePullPolicy: Always
+        image: redsolacr.azurecr.io/humanconnection/backend:latest
+        imagePullPolicy: IfNotPresent
         name: backend
         ports:
         - containerPort: 4000

@@ -27,12 +27,15 @@ spec:
         human-connection.org/selector: deployment-human-connection-neo4j
       name: neo4j
     spec:
+      imagePullSecrets:
+      - name: acrregistrycreds
+
       containers:
       - envFrom:
         - configMapRef:
             name: configmap
         image: redsolacr.azurecr.io/humanconnection/neo4j:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: neo4j
         ports:
         - containerPort: 7687

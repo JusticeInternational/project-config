@@ -208,7 +208,32 @@ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
             --attach-acr $ACR_NAME \
             --subscription $SUBSCRIPTION_ID
 ```
-
+##### Workaround for failure
+Since we're getting this failure:
+```
+❯ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
+            --attach-acr $ACR_NAME \
+            --subscription $SUBSCRIPTION_ID
+Waiting for AAD role to propagate[################################    ]  90.0000%Could not create a role assignment for ACR. Are you an Owner on this 
+```
+We're going to work around it by setting up username and password for pulls to registry.
+1. Login to portal and enable Access Keys for username and password
+1. Record the username and password in two env vars and set the registry url:
+   ```
+   export AKS_DOCKER_USERNAME=<username>
+   export AKS_DOCKER_PASSWORD=<password>
+   export ACR_REGISTRY="${ACR_NAME}.azurecr.io"
+   ```
+2. Login to az command line; `az login`
+3. Login to aks : `az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin`
+4. Use kubectl to create a secret ([as described here](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes)):
+   ```
+   kubectl --namespace human-connection \
+    create secret docker-registry acrregistrycreds \
+    --docker-server="${ACR_REGISTRY}" \
+    --docker-password="${AKS_DOCKER_PASSWORD}" \
+    --docker-username="${AKS_DOCKER_USERNAME}"
+   ```
 #### Login as admin
 ```
 az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin
