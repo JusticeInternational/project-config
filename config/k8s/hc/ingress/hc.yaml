@@ -14,26 +14,10 @@ spec:
   - http:
       paths:
       - backend:
-          serviceName: neo4j
-          servicePort: 7474
-        path: /neo4j-web/(.*)
+          serviceName: backend
+          servicePort: 4000
+        path: /backend/(.*)
       - backend:
-          serviceName: neo4j
-          servicePort: 7474
+          serviceName: backend
+          servicePort: 4000
         path: /(.*)
-      - backend:
-          serviceName: neo4j
-          servicePort: 7687
-        path: /neo4j-bolt/(.*)
-      - backend:
-          serviceName: neo4j
-          servicePort: 7687
-        path: /(.*)
-      # - backend:
-      #     serviceName: backend
-      #     servicePort: 4000
-      #   path: /backend-web/(.*)
-      # - backend:
-      #     serviceName: backend
-      #     servicePort: 4000
-      #   path: /(.*)

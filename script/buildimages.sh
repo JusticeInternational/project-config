@@ -28,7 +28,9 @@ function git_clone_hc() {
 function build_container() {
     _service="${1}"
     docker-compose --file "${HC_DIR}/docker-compose.yml" build "${_service}"
-    docker tag humanconnection/neo4j:latest "${ACR_REGISTRY}/${PROJECT}/${_service}:${VERSION}"
+    _source_service="${_service}"
+    [[ "${_service}" = "backend" ]] && _source_service="nitro-${_service}"
+    docker tag humanconnection/${_source_service}:${VERSION} "${ACR_REGISTRY}/${PROJECT}/${_service}:${VERSION}"
 }
 
 # push to ACR

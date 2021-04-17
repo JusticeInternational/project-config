@@ -6,7 +6,7 @@ metadata:
   name: backend
   namespace: human-connection
   labels:
-    app: deployment-human-connection-backend
+    app: backend
 spec:
   type: ClusterIP
   ports:
@@ -15,4 +15,4 @@ spec:
       targetPort: 4000
       port: 4000
   selector:
-    app: deployment-human-connection-backend
+    app: backend

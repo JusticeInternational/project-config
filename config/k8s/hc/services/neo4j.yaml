@@ -6,7 +6,7 @@ metadata:
   name: neo4j
   namespace: human-connection
   labels:
-    app: deployment-human-connection-neo4j
+    app: neo4j
 spec:
   type: ClusterIP
   ports:
@@ -19,4 +19,4 @@ spec:
       port: 7474
       name: web
   selector:
-    app: deployment-human-connection-neo4j
+    app: neo4j
