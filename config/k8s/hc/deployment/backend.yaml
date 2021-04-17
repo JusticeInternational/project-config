@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: human-connection
+spec:
+  minReadySeconds: 15
+  progressDeadlineSeconds: 60
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 100%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        backup.velero.io/backup-volumes: uploads
+      labels:
+        app: backend
+    spec:
+
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: configmap
+        - secretRef:
+            name: human-connection
+        image: redsolacr.azurecr.io/humanconnection/backend:latest
+        imagePullPolicy: Always
+        name: backend
+        ports:
+        - containerPort: 4000
+          protocol: TCP
+        resources:
+          limits:
+            cpu: '1000m'
+            memory: '2000Mi'
+          requests:
+            cpu: '200m'
+            memory: '100Mi'
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /nitro-backend/public/uploads
+          name: uploads
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads-claim
+status: {}

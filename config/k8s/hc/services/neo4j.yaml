@@ -1,0 +1,22 @@
+# https://github.com/github/kube/blob/master/docs/kubernetes/resources/service.md
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: neo4j
+  namespace: human-connection
+  labels:
+    app: neo4j
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 7687
+      targetPort: 7687
+      name: bolt
+    - protocol: TCP
+      targetPort: 7474
+      port: 7474
+      name: web
+  selector:
+    app: neo4j
