@@ -23,7 +23,7 @@ $> ngrok_start
 Read up more on codespaces setup [here](https://github.com/JusticeInternational/Human-Connection/blob/stable/.devcontainer/README.md).
 
 ## Development Setup
-Humman Connection was setup to use docker containers, and there are several ways we can deploy the webapp and backend using instructions provided in the `./deployment` folder. We'll use `docker` and `docker-compose` commands to make this simple, so, first step:
+Human Connection was setup to use docker containers, and there are several ways we can deploy the webapp and backend using instructions provided in the `./deployment` folder. We'll use `docker` and `docker-compose` commands to make this simple, so, first step:
 
 1. You should have docker and docker-compose installed from www.docker.com
 1. Setup security for `./backend` and `./webapp`:

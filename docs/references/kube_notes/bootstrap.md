@@ -1,17 +1,30 @@
-# Experiment for Kubernetes setup
+# Getting a working Kubernetes setup on AZ
 
-We're experimenting with kube for deployment. These notes will have commands we're using to set that up.
+We're working with kube for deployment on Azure. These notes will have commands we're using to set that up.
 
 Some docs on how to add [AAD steps](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli#create-server-application)
 
 ## Env Explanation
 - We are setup East US for SA support
 - We are using a small 1 node cluster with B series nodes to save for development but we should use 3 in production
-- We're linking the dev AD group
+- We're linking the dev AD group for permissions
 
-## Commands
+## Command setup and steps
 
-### Env Setup
+Several of the steps below were done during troubleshooting and developing a plan for how we would setup the cluster. Most of those commands have either been removed or summarized into scripts that were functional for our use. 
+
+This docs notes are scripted out as follows:
+
+1. Env config is in [`/script/env_source.sh`](/script/env_source.sh)
+1. Create the instance with [`/script/create_instance.sh`](/script/create_instance.sh)
+1. Attach an acr registry to k8s with [`/script/attach_acr.sh`](/script/attach_acr.sh)
+1. Setup permissions with [`/script/assign_permissions.sh`](/script/assign_permissions.sh)
+1. Create ingress with [`/script/create_ingress.sh`](/script/create_ingress.sh)
+1. Setup a demo app for testing with [`/script/demo?_app.sh`](/script/demo_app.sh)
+
+If your trouble shooting the rest of the doc could be useful for following and understanding what we're doing in each script.
+
+### Env Setup `env_source.sh`
 ```
 RESOURCE_GROUP=redsol-RG
 SUBSCRIPTION_ID=8b91797a-2975-47ad-95dd-5767ebf67c90
@@ -131,7 +144,7 @@ APP_ID=$(az ad app show --id $serverApplicationId --query "appId" -o tsv)
 az role assignment create --assignee $APP_ID --scope $VNET_ID --role "Network Contributor"
 ```
 
-### Create AZ cluster
+### Create AZ cluster `create_instance.sh`
 ```
 
 tenantId=$(az account show --query tenantId -o tsv)
@@ -179,7 +192,7 @@ az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
                --subscription $SUBSCRIPTION_ID
 ```
 
-### Setup Cluster Role Perms
+### Setup Cluster Role Perms `assign_permissions.sh`
 
 #### User Perms
 ```
@@ -202,7 +215,7 @@ az acr create -g $RESOURCE_GROUP --name $ACR_NAME \
               --subscription $SUBSCRIPTION_ID
 ```
 
-#### Attach AKS cluster to ACR by name "acrName"
+#### Attach AKS cluster to ACR by name "acrName" `attach_acr.sh`
 ```
 az aks update -g $RESOURCE_GROUP -n $CLUSTER_NAME \
             --attach-acr $ACR_NAME \
@@ -245,7 +258,7 @@ az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --s
 kubectl get deployments --namespace kube-system
 ```
 
-#### Configure Cluster RBAC
+#### Configure Cluster RBAC `assign_permissions.sh`
 
 ```
 CURRENT_ID=$(az ad signed-in-user show --query userPrincipalName -o tsv)
@@ -283,7 +296,7 @@ kubectl get deployments --namespace default
 kubectl get pods --all-namespaces
 ```
 
-### Setting up AKS ingress controller
+### Setting up AKS ingress controller `create_ingress.sh`
 Lets setup inbound access to services with [these instructions](https://docs.microsoft.com/en-us/azure/aks/ingress-basic).
 
 ```
@@ -302,5 +315,5 @@ helm install nginx-ingress ingress-nginx/ingress-nginx \
     --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux
 ```
 
-#### Test ingress
+#### Test ingress `demo_app?.sh`
 Test it with [this app demo](https://docs.microsoft.com/en-us/azure/aks/ingress-basic#run-demo-applications).

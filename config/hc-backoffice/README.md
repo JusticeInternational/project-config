@@ -1,6 +1,6 @@
 ## Development
 
-We're development the backoffice application here for backend of our mobile app. We use the Humman-Connection repository so we'll use this as a basis for our setup.
+We're development the backoffice application here for backend of our mobile app. We use the Human-Connection repository so we'll use this as a basis for our setup.
 
 Here is what we need todo
 - [ ] Workflow for making code updates using codespaces for `JusticeInternational/Human-Connection`
