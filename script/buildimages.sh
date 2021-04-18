@@ -8,7 +8,7 @@ echo "Building ACR images"
 
 ACR_REGISTRY="${ACR_REGISTRY:-redsolacr.azurecr.io}"
 ACR_REGISTRY_NAME="$(echo $ACR_REGISTRY|awk -F'.' '{print $1}')"
-HC_DIR="${HC_DIR:-.env/Humman-Connection}"
+HC_DIR="${HC_DIR:-.env/Human-Connection}"
 SERVICES="${SERVICES:-neo4j backend}"
 PROJECT="${PROJECT:-humanconnection}"
 VERSION="${VERSION:-latest}"
