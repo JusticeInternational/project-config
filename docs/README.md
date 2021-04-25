@@ -8,3 +8,4 @@
 - [Wire Frame for mobile](https://www.figma.com/proto/nolX6HBTIM4UlNAHnjddcl/Red-Solidaria-Prototype?node-id=1131%3A180&scaling=fit-width)
 - [K8s cluster bootstraping guide](/docs/references/kube_notes/bootstrap.md)
 - [Deploying HC app with AKS](/docs/k8s_deployment.md)
+- [Test the API](https://github.com/JusticeInternational/project-config/tree/stable/config#test-the-api)
