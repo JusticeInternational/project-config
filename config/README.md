@@ -30,6 +30,8 @@ These are just some general notes that will work with the following alias;
 alias k='kubectl --namespace human-connection'
 ```
 ### Login to k8s cluster
+Clone the `project-config` repo and `cd ./project-config`.
+
 ```
 source ./script/env_source.sh
 az login
@@ -37,11 +39,18 @@ az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --s
 ```
 
 ### Connecting to the ports for development
-	- Let you open browser; http://localhost:7474/browser/
-    - API : http://localhost:4000/graphql
+- Let you open browser; http://localhost:7474/browser/
+- API : http://localhost:4000/graphql
 
+Run these two commands in two seperate terminal windows.
+
+Terminal 1:
 ```
 k port-forward service/neo4j 7474:7474 7687:7687
+```
+
+Terminal 2:
+```
 k port-forward service/backend 4000:4000
 ```
 
