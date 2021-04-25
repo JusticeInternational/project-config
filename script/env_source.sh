@@ -9,3 +9,5 @@ NODE_COUNT=1
 APPDEV_NAME="dev"
 ACR_NAME=redsolacr
 AD_SP_CREDS_JSON="${HOME}/.azcli_creds.secrets.json"
+KEYVAULT_NAME="${CLUSTER_NAME}-kv"
+USER_ASSIGNED_ID_NAME="${CLUSTER_NAME}_admin_id"
