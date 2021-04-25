@@ -42,6 +42,18 @@ az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --s
 - Let you open browser; http://localhost:7474/browser/
 - API : http://localhost:4000/graphql
 
+The username and password can be access from AKS secretes however, you can also access them directly from the running app when you login with `kubectl` credentials.
+
+Username:
+```
+k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_USERNAME=
+```
+
+Password:
+```
+k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_PASSWORD=
+```
+
 Run these two commands in two seperate terminal windows.
 
 Terminal 1:
