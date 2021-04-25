@@ -29,6 +29,12 @@ These are just some general notes that will work with the following alias;
 ```
 alias k='kubectl --namespace human-connection'
 ```
+### Login to k8s cluster
+```
+source ./script/env_source.sh
+az login
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
+```
 
 ### Connecting to the ports for development
 	- Let you open browser; http://localhost:7474/browser/
