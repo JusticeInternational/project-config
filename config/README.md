@@ -53,6 +53,7 @@ Terminal 2:
 ```
 k port-forward service/backend 4000:4000
 ```
+These commands will remain running unitl you cancel them with `ctrl-c`. They are intended to open up local ports for you to access the graphql backend urls with `localhost`.
 
 ### Connect over terminal
 
