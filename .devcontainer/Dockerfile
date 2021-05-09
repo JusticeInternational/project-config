@@ -43,6 +43,7 @@ RUN echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf && \
        vim \
        bash \
        zsh \
+       uuid-runtime \
     #
     # install kubectl
     #
