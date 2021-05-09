@@ -20,17 +20,10 @@ COPY entrypoint.sh /bin/entrypoint.sh
 
 ARG KUBECTL_VERSION=v1.17.11
 
-# Helm repo
-RUN curl https://baltocdn.com/helm/signing.asc | sudo apt-key add - && \
-    apt-get install apt-transport-https --yes && \
-    echo "deb https://baltocdn.com/helm/stable/debian/ all main" | \
-    tee /etc/apt/sources.list.d/helm-stable-debian.list
-
 RUN echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf && \
     export DEBIAN_FRONTEND=noninteractive \
     && apt-get -qq update \
     && apt-get -qq install --no-install-recommends \
-       helm \
        apt-transport-https \    
        apt-utils \
        dialog \
@@ -51,6 +44,16 @@ RUN echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf && \
        bash \
        zsh \
        uuid-runtime \
+    #
+    # install helm
+    #
+    && curl https://baltocdn.com/helm/signing.asc | apt-key add - \
+    && apt-get install apt-transport-https --yes \
+    && echo "deb https://baltocdn.com/helm/stable/debian/ all main" | \
+    && tee /etc/apt/sources.list.d/helm-stable-debian.list \
+    && apt-get -qq update \
+    && apt-get -qq install --no-install-recommends \
+       helm \
     #
     # install kubectl
     #
