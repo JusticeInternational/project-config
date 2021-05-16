@@ -3,6 +3,7 @@
 set -e
 
 source ./script/env_source.sh
+source ./script/az_helpers.sh
 
 # setup secrets for hc app
 function random_CAP_letter() {
@@ -31,6 +32,9 @@ function get_char() {
 }
 
 function generate_secret() {
+  _max_pass="${1:-64}"
+  _pass_gen="${2}"
+
   part1=$(uuidgen | tr '[:upper:]' '[:lower:]'|awk -F'-' '{print $2$3}')
   part2=$(uuidgen | tr '[:upper:]' '[:lower:]'|awk -F'-' '{print $1$4}')
   part3=$(uuidgen | tr '[:upper:]' '[:lower:]'|awk -F'-' '{print $3$4}')
@@ -45,30 +49,43 @@ function generate_secret() {
      [[ 5 -eq $(( $RANDOM % 7 )) ]] && pass_gen="${pass_gen}$(get_char "${part2}")$(random_CAP_letter)"
      [[ 6 -eq $(( $RANDOM % 7 )) ]] && pass_gen="${pass_gen}$(get_char "${part3}")$(random_CAP_letter)"
   done
-  echo "${pass_gen}"
+
+  _pass_gen="${_pass_gen}${pass_gen}"
+  while [[ $(echo "${_pass_gen}" | wc -c|sed -r 's/( )+//g') -le ${_max_pass} ]]; do
+      _pass_gen=$(generate_secret "${_max_pass}" "${_pass_gen}");
+  done
+  echo "$(echo "${_pass_gen}" | cut -c "1-$(( ${_max_pass} + 1 ))")"
 }
-echo $(generate_secret)
+
+login_az
 # JSON Web Token
 # set automatically
 # JWT_SECRET
+az_save_secret "JwtSecret" "$(generate_secret)"
 
 # signup required key phrase
 # set automatically
 # PRIVATE_KEY_PASSPHRASE
+az_save_secret "PrivateKeyPassphrase" "$(generate_secret)"
 
 # Should be set automatically
 #  NEO4J_USERNAME: "YWRtaW4K"
 #  NEO4J_PASSWORD: "YWRtaW4xMjNwYXNzCg=="
+az_save_secret "Neo4jUsername" "$(generate_secret)"
+az_save_secret "Neo4jPassword" "$(generate_secret)"
 
 # required geo location api token https://api.mapbox.com/geocoding
 # not auto generated, need to prompt comment
 # MAPBOX_TOKEN:
-
-
-# Not required used in mongo DB legacy exports but we'll set it
-# set from defaults
-# MONGODB_PASSWORD
+echo "Setting MapBoxToken from MAPBOX_TOKEN env"
+export MAPBOX_TOKEN="${MAPBOX_TOKEN:-}"
+az_save_secret "MapBoxToken" "${MAPBOX_TOKEN:-$(echo "TU9OR09EQl9QQVNTV09SRA=="| base64 --decode)}"
 
 # required for email messages, should be set manually
-# SMTP_USERNAME: "cmVkc29sLmludGVybmF0aW9uYWxAZ21haWwuY29tCg=="
-# SMTP_PASSWORD: "SnVzdGljaWE1Lgo="
+echo "Setting SmtpUsername from SMTP_USERNAME env"
+export SMTP_USERNAME="${SMTP_USERNAME:-$(echo "cmVkc29sLmludGVybmF0aW9uYWxAZ21haWwuY29tCg=="| base64 --decode)}"
+az_save_secret "SmtpUsername" "${SMTP_USERNAME}"
+
+echo "Setting SmtpPassword from SMTP_PASSWORD env"
+export SMTP_PASSWORD="${SMTP_PASSWORD:-$(echo "SnVzdGljaWE1Lgo="| base64 --decode)}"
+az_save_secret "SmtpPassword" "${SMTP_PASSWORD}"

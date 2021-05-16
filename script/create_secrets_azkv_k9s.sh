@@ -3,30 +3,12 @@
 set -e
 
 source ./script/env_source.sh
+source ./script/az_helpers.sh
 
 #
 # Create and setup Azure KeyVault for Kubernetes
 
-#
-# Login account
-# requires env_source.sh
-function login_az() {
 
-    az login
-    az account set -s "${SUBSCRIPTION_ID}"
-
-    az aks get-credentials \
-                --resource-group "${RESOURCE_GROUP}" \
-                --name "${CLUSTER_NAME}" \
-                --subscription "${SUBSCRIPTION_ID}" \
-                --admin
-
-    az keyvault create \
-                --name "${KEYVAULT_NAME}" \
-                --resource-group "${RESOURCE_GROUP}" \
-                --location "${LOCATION}"
-
-}
 
 function setup_azkv_policies() {
 
