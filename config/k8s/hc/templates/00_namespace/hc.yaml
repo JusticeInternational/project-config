@@ -2,4 +2,4 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: human-connection
+   name: {{ include "hc.namespace" . }}

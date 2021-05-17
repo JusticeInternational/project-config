@@ -1,10 +1,11 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: neo4j
-  namespace: human-connection
+  namespace: {{ include "hc.namespace" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.neo4j.replicaCount }}
   selector:
     matchLabels:
       app: neo4j
@@ -19,8 +20,8 @@ spec:
       - envFrom:
         - configMapRef:
             name: configmap
-        image: redsolacr.azurecr.io/humanconnection/neo4j:latest
-        imagePullPolicy: Always
+        image: "{{ .Values.image.repository }}neo4j:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: neo4j
         ports:
         - containerPort: 7687

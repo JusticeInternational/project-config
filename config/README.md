@@ -2,7 +2,7 @@
 
 We'll have project automation, actions and general scripts in this location.
 
-Connect to backend API - [http://redsol.eastus.cloudapp.azure.com/](http://redsol.eastus.cloudapp.azure.com/)
+Connect to backend API - [http://redsol.eastus.cloudapp.azure.com/backend](http://redsol.eastus.cloudapp.azure.com/backend)
 
 ## Building docker demo app
 
@@ -21,6 +21,18 @@ az acr build \
 kubectl delete namespace demo-app && \
   kubectl apply -R -f ./config/k8s/demo
 ```
+
+## Building RedSol Backend and Db
+```
+./script/buildimages.sh
+```
+
+## Deploy RedSol Backend and Db
+1. Update version in `./config/k8s/hc/Chart.yaml`, value for `appVersion`.
+1. Run Script
+   ```
+   ./script/deploy.sh
+   ```
 
 ## Notes
 
@@ -46,12 +58,12 @@ The username and password can be access from AKS secretes however, you can also 
 
 Username:
 ```
-k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_USERNAME=
+export NEO4J_USERNAME=$(k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_USERNAME=)
 ```
 
 Password:
 ```
-k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_PASSWORD=
+export NEO4J_PASSWORD=$(k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_PASSWORD=)
 ```
 
 Run these two commands in two seperate terminal windows.
@@ -154,7 +166,7 @@ This step should help with seeding the db for AKS cluster.
 1. Open a new `bash` terminal and setup the env. Copy the `.env.template` file to `.env`:
    
    ```
-   cd ./.env/Human-Connection/backend
+   cd ./.env/Human-Connection/backend && \
    cp .env.template .env
    ```
 
@@ -164,7 +176,9 @@ This step should help with seeding the db for AKS cluster.
    ```
    export NEO4J_USERNAME='<value from data.NEO4J_USERNAME>'
    export NEO4J_PASSWORD='<value from data.NEO4J_PASSWORD>'
-   sed -i -e 's/NEO4J_USERNAME=.*/NEO4J_USERNAME='${NEO4J_USERNAME}'/' ./.env
+   ```
+   ```
+   sed -i -e 's/NEO4J_USERNAME=.*/NEO4J_USERNAME='${NEO4J_USERNAME}'/' ./.env && \
    sed -i -e 's/NEO4J_PASSWORD=.*/NEO4J_PASSWORD='${NEO4J_PASSWORD}'/' ./.env
    ```
 
@@ -172,6 +186,8 @@ This step should help with seeding the db for AKS cluster.
    ```
    cd ./backend
    yarn install
+   ```
+   ```
    yarn db:seed
    ```
    You should see output as follows:
@@ -188,7 +204,7 @@ This step should help with seeding the db for AKS cluster.
 
 
 ### Test the API
-We can test the API with `bash` and `curl` against the public dev url: `http://redsol.eastus.cloudapp.azure.com/`. Note this step will not require `kubectl port-forward` commands or an `az login`.
+We can test the API with `bash` and `curl` against the public dev url: `http://redsol.eastus.cloudapp.azure.com/backend/`. Note this step will not require `kubectl port-forward` commands or an `az login`.
 
 1. Open a `bash` terminal session and run the following scripts to give some helper functions:
    ```
@@ -204,7 +220,7 @@ We can test the API with `bash` and `curl` against the public dev url: `http://r
     graphql "query IntrospectionQuery {  __schema { types { name } } }" |jq -r
    }
    ```
-1. Setup `CLIENT_API` with `export CLIENT_API=http://redsol.eastus.cloudapp.azure.com`
+1. Setup `CLIENT_API` with `export CLIENT_API=http://redsol.eastus.cloudapp.azure.com/backend`
 1. Try some commands:
    - Query the schema with [introspection](https://graphql.org/learn/introspection/), this requires `DEBUG=true` or `NODE_ENV=true`:
      ```
@@ -226,8 +242,3 @@ We can test the API with `bash` and `curl` against the public dev url: `http://r
      ```
      graphql "{Service{id,name}}"| jq -r '.data'
      ```
-
-
-
-
-
