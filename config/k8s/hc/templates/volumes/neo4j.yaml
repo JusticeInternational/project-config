@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: uploads-claim
-  namespace: human-connection
+  name: neo4j-data-claim
+  namespace: {{ include "hc.namespace" . }}
 spec:
   accessModes:
   - ReadWriteOnce

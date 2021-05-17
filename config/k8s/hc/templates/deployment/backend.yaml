@@ -1,12 +1,13 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: human-connection
+  namespace: {{ include "hc.namespace" . }}
 spec:
   minReadySeconds: 15
   progressDeadlineSeconds: 60
-  replicas: 1
+  replicas: {{ .Values.backend.replicaCount }}
   revisionHistoryLimit: 2147483647
   selector:
     matchLabels:
@@ -23,15 +24,14 @@ spec:
       labels:
         app: backend
     spec:
-
       containers:
       - envFrom:
         - configMapRef:
             name: configmap
         - secretRef:
             name: human-connection
-        image: redsolacr.azurecr.io/humanconnection/backend:latest
-        imagePullPolicy: Always
+        image: "{{ .Values.image.repository }}backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: backend
         ports:
         - containerPort: 4000
