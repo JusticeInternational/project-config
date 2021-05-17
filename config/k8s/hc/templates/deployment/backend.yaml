@@ -4,6 +4,9 @@ kind: Deployment
 metadata:
   name: backend
   namespace: {{ include "hc.namespace" . }}
+  labels:
+    app: backend
+    aadpodidbinding: redsol_admin_id
 spec:
   minReadySeconds: 15
   progressDeadlineSeconds: 60
@@ -23,6 +26,7 @@ spec:
         backup.velero.io/backup-volumes: uploads
       labels:
         app: backend
+        aadpodidbinding: redsol_admin_id
     spec:
       containers:
       - envFrom:
@@ -32,6 +36,43 @@ spec:
             name: human-connection
         image: "{{ .Values.image.repository }}backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+            # https://azure.github.io/secrets-store-csi-driver-provider-azure/configurations/set-env-var/
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app.jwtsecret
+                  key: JWT_SECRET
+            - name: PRIVATE_KEY_PASSPHRASE
+              valueFrom:
+                secretKeyRef:
+                  name: app.privatekeypassphrase
+                  key: PRIVATE_KEY_PASSPHRASE
+            - name: NEO4J_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app.neo4j.username
+                  key: NEO4J_USERNAME
+            - name: NEO4J_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app.neo4j.password
+                  key: NEO4J_PASSWORD
+            - name: MAPBOX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app.mapboxtoken
+                  key: MAPBOX_TOKEN
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app.smtp.username
+                  key: SMTP_USERNAME
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app.smtp.password
+                  key: SMTP_PASSWORD
         name: backend
         ports:
         - containerPort: 4000
@@ -57,4 +98,10 @@ spec:
       - name: uploads
         persistentVolumeClaim:
           claimName: uploads-claim
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "redsol-kv"
 status: {}
