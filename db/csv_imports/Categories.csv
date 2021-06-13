@@ -1,0 +1,76 @@
+code,order,classification,Category,icon_name,includes_ES,includes_EN,description
+110,50,Funcional,Pruebas COVID,cat_110.png,,,
+120,60,Funcional,Vacunación,cat_120.png,,,
+130,70,Funcional,Ayudas COVID,cat_130.png,,,
+100,80,Funcional,Todo sobre el Corona Virus,cat_100.png,,,
+200,100,Funcional,Agua y comida,cat_200.png,"estaciones de agua y comida, bancos de alimentos, comedores comunitarios, cafeterías subvencionadas, mercados populares, sitios subsidiados o que reciben cupones o estampillas del gobierno ",,"estaciones de agua y comida, bancos de alimentos, comedores comunitarios, cafeterías subvencionadas, mercados populares, sitios subsidiados o que reciben cupones o estampillas del gobierno "
+300,200,Funcional,"Albergue y vivienda
+",cat_300.png,"camas, cuartos, baos, duchas, campamentos, refugio, albergues, hospedaje, vivienda pública, vivienda en general",,"camas, cuartos, baos, duchas, campamentos, refugio, albergues, hospedaje, vivienda pública, vivienda en general"
+400,300,Funcional,"Necesidades de la vida diaria
+",cat_400.png,"ropa, zapatos, productos para la higiene personal y otras donaciones menores como medicamentos sin prescripcion, utensilios y equipos para el hogar, etc.",,"ropa, zapatos, productos para la higiene personal y otras donaciones menores como medicamentos sin prescripcion, utensilios y equipos para el hogar, etc."
+500,400,Funcional,Información y consejos generales,cat_500.png,,,
+600,500,Funcional,"Cuidado, salud y bienestar
+",cat_600.png," medicamentos, consultas, hospitales, salud publica….
+","Includes services that support health, and services which provide for care of children, elderly, disabled and others. Public healthcare"," medicamentos, consultas, hospitales, salud publica….
+
+
+Enlish:
+Includes services that support health, and services which provide for care of children, elderly, disabled and others. Public healthcare"
+700,600,Funcional,"Educación
+",cat_700.png,"entrenamiento escolar , educación pública .","
+Includes schooling and training, Public education""","entrenamiento escolar , educación pública .
+
+Enlish:
+
+Includes schooling and training, Public education"""
+800,700,Funcional,Internet y comunicaciones,cat_800.png,acceso a la comunicación que permite la participacion en la sociedad asi como tambien la información  sobre otros servicios .,acces to comunication. other services' information,"acceso a la comunicación que permite la participacion en la sociedad asi como tambien la información  sobre otros servicios .
+
+Enlish:
+acces to comunication. other services' information"
+900,800,Funcional,"Transporte 
+",cat_900.png,transporte local para acceso a servicios y empleos.,local transportation to employement and other services,"transporte local para acceso a servicios y empleos.
+
+Enlish:
+local transportation to employement and other services"
+1000,850,Funcional,"Empleo, Economía y finanzas",cat_1000.png,,,
+1010,900,Funcional,"Empleo
+",cat_1010.png,acceso al trabajo en una pequeña escala de emprendimiento.,acces to work un a small scale entrepenurship,"acceso al trabajo en una pequeña escala de emprendimiento.
+
+Enlish:
+acces to work un a small scale entrepenurship"
+1020,1000,Funcional,Emprendimiento,cat_1020.png,para beneficios sociales del emprendendimiento .,"
+Includes for-profit social or non-profit entrepreneurship as well as participate in community in decision making for collective action","para beneficios sociales del emprendendimiento .
+
+Enlish:
+
+Includes for-profit social or non-profit entrepreneurship as well as participate in community in decision making for collective action"
+1100,1100,Funcional,Espiritualidad y Religión,cat_1100.png,,,
+1200,1200,Funcional,"Servicios publicos
+",cat_1200.png,"asistencia legal, Cortes, agencias de servicio social, servicio local ."," firefighting, Legal aid, Courts, Social services agencies, Local service","asistencia legal, Cortes, agencias de servicio social, servicio local .
+
+Enlish:
+ firefighting, Legal aid, Courts, Social services agencies, Local service"
+1300,1300,Funcional,Inmigración,cat_1300.png,,,
+1400,1350,Funcional,"Legal
+",cat_1400.png,"la categoría legal incluye servicio de seguridad , asistencia legal y los implementos necesariospara sustentar el sistema legal y político de la sociedad.","
+Includes the Legal category includes safety services, legal assistance and the apparatus necessary to sustain the society's legal system and political system.","la categoría legal incluye servicio de seguridad , asistencia legal y los implementos necesariospara sustentar el sistema legal y político de la sociedad.
+
+Enlish:
+
+Includes the Legal category includes safety services, legal assistance and the apparatus necessary to sustain the society's legal system and political system."
+1500,1400,Funcional,"Deportes, Hobbies, Clubes de entreteniamiento",cat_1500.png,vida social,,vida social
+1600,1400,,"Música, arte y cultura",cat_1600.png,,,
+1700,1700,Funcional,Ambiental y Parques nacionales,cat_1700.png,,,
+2100,2000,Demografica,"Embarazadas, Maternidad",cat_2100.png,,,
+2200,2000,Demografica,Familia,cat_2200.png,"incluye servicios para la mujer, embarazada",,"incluye servicios para la mujer, embarazada"
+2300,2000,Demografica,Generos,cat_2300.png,"Recursos especiales hombres, mujeres,comunidad LGBTQ",,"Recursos especiales hombres, mujeres,comunidad LGBTQ"
+2400,2100,Demografica,"Infancia, Niños ",cat_2400.png,,,
+2500,2100,Demografica,Adolecentes y adultos jovenes,cat_2500.png,,,
+2600,2200,,Personas con discapacidades,cat_2600.png,,,
+2700,2300,Demografica,Personas con necesidades especiales,cat_2700.png,,,
+2800,2400,Demografica,Tercera edad,cat_2800.png,,,
+3100,3100,Situational,Emergencia crisis y supervivencia,cat_3100.png,,,
+3200,3200,Situacional,Bienestar social,cat_3200.png,"Derechos  para lograr una comunidad sana, educada y con trabajo estable",,"Derechos  para lograr una comunidad sana, educada y con trabajo estable"
+3300,3300,Situacional,Florecimiento/Igualdad de oportunidades,cat_3300.png,,,
+,4100,Geografica,Venezuela,,,,
+,4200,Geografica,Siria,,,,
