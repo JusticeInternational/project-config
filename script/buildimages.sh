@@ -6,6 +6,7 @@ set -x -v
 
 echo "Building ACR images"
 
+HC_BRANCH="${HC_BRANCH:-origin/stable}"
 ACR_REGISTRY="${ACR_REGISTRY:-redsolacr.azurecr.io}"
 ACR_REGISTRY_NAME="$(echo $ACR_REGISTRY|awk -F'.' '{print $1}')"
 HC_DIR="${HC_DIR:-.env/Human-Connection}"
@@ -18,10 +19,17 @@ function git_clone_hc() {
     mkdir -p "${HC_DIR}"
     if [[ ! -d "${HC_DIR}/.git" ]]; then
         git clone https://github.com/JusticeInternational/Human-Connection "${HC_DIR}"
-    else
-        # TODO lookup the default branch
-        (cd "${HC_DIR}" && git reset --hard origin/stable && git pull origin stable)
     fi
+    # TODO lookup the default branch
+    _default_branch="origin/stable"
+    (
+      cd "${HC_DIR}" && \
+      git checkout "${_default_branch}"
+      git reset --hard "${_default_branch}"
+      git branch --list|grep -e "\s${HC_BRANCH}$" || git checkout -b "${HC_BRANCH}"
+      git checkout "${HC_BRANCH}"
+      eval git pull $(echo "${HC_BRANCH}" | sed 's/\// /')
+    )
 }
 
 # build container
