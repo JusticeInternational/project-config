@@ -1,0 +1,31 @@
+name: image updates
+
+#on:
+#  schedule:
+# * is a special character in YAML so you have to quote this string
+#    - cron:  '30 5,17 * * *'
+
+on: 
+  workflow_dispatch:
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - stable
+  pull_request:
+    branches:
+      - stable
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          echo "login with az"
+          echo "clone repo that has the images"
+          echo "run command az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d director"
