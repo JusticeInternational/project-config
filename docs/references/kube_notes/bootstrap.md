@@ -20,6 +20,7 @@ This docs notes are scripted out as follows:
 1. Attach an acr registry to k8s with [`/script/attach_acr.sh`](/script/attach_acr.sh)
 1. Setup permissions with [`/script/assign_permissions.sh`](/script/assign_permissions.sh)
 1. Create ingress with [`/script/create_ingress.sh`](/script/create_ingress.sh)
+1. Create KeyVault integration with k8s with [`/script/create_secrets_azkv_k9s.sh`](/script/create_secrets_azkv_k9s.sh)
 1. Setup a demo app for testing with [`/script/demo?_app.sh`](/script/demo_app.sh)
 
 If your trouble shooting the rest of the doc could be useful for following and understanding what we're doing in each script.
