@@ -22,3 +22,7 @@ Some references to initial documentation:
 - Backlog version 3 (current): https://docs.google.com/spreadsheets/d/1bOGsx9E77-5QbzHp9VJhefdqPriGX5TjfV0589Fn7u8/edit?usp=sharing
 
 See also the subfolder "Reference" in documents for more on initial documentation pertinent to the design of the app
+
+## Deployments
+
+We're using GitHub Actions to deploy. For more information checkout the `.github/workflows` and [read about deployments here](docs/deployments.md)
