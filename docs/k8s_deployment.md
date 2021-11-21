@@ -52,7 +52,7 @@ You should have each of these tools installed and setup:
    ```
 
    More notes can be found in [k8s docs here](/config/k8s/README.md).
-
+5. [Follow additional instructions on resetting and updating the DB](https://github.com/JusticeInternational/project-config/blob/stable/config/README.md#building-redsol-backend-and-db).
 ## Monitor
 
 To get the ip addresses of the services:
