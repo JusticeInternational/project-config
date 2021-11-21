@@ -4,13 +4,45 @@ This is quick step deployment for AKS. If the cluster has not been shared or you
 
 Note you may have to make updates locally to `/script/env_source.sh` if you are making a personell instance and then follow the [bootstrap guide](/docs/kube_notes/bootstrap.md).
 
+All of these commands require that you have cloned the `JusticeInternational/project-config` repo:
+```
+cd /workspaces
+git clone https://github.com/JusticeInternational/project-config
+cd /workspaces/project-config
+```
+
+## Pre-Req
+
+You should have each of these tools installed and setup:
+
+1. [Install Azure cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt), in codespaces:
+   ```
+   curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+   ```
+2. [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/), in codespaces:
+   ```
+   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+   sudo mv ./kubectl /usr/local/bin/kubectl
+   sudo chmod +x /usr/local/bin/kubectl
+   ```
+3. [Install helm](https://helm.sh/docs/intro/install/), in codespaces:
+   ```
+   curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+   sudo chmod +x /usr/local/bin/helm
+   ```
+
 ## Steps
 
-1. Login with `az login`
-2. Build the containers with the command `./script/buildimages.sh`
-3. Create the namespace:
+1. Login to k8s env
+   - Visit and login to [the portal](https://portal.azure.com/#@redsol.onmicrosoft.com/resource/subscriptions/8b91797a-2975-47ad-95dd-5767ebf67c90/resourceGroups/redsol-RG/providers/Microsoft.ContainerService/managedClusters/redsol/overview)
+   - Login with the cli: `az login`
+   - Get kubectl credentials: `source script/env_source.sh && az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID`
+2. Build the containers for the branch you want with the command `HC_BRANCH=origin/yourbranch_name ./script/buildimages.sh`, Leave `HC_BRANCH` empty if to default to `origin/stable`.
+3. Clean out any previous deployments: `kubectl delete namespace human-connection`
+   WARNING THIS DELETES ALL DATA!!!
+3. Run the deployment script:
    ```
-   kubectl apply -R -f ./config/k8s/hc
+   ./script/deploy.sh
    ```
 4. Check the deployments with commands (example, change the pod names):
    ```
@@ -31,7 +63,7 @@ kubectl --namespace human-connection get service neo4j --watch
 
 ## Cleanup
 
-Run the command
+Run the command to remove the app:
 
 ```
 kubectl delete namespace human-connection
