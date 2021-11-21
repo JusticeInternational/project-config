@@ -58,12 +58,12 @@ The username and password can be access from AKS secretes however, you can also 
 
 Username:
 ```
-export NEO4J_USERNAME=$(k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_USERNAME=)
+export NEO4J_USERNAME=$(k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name'| head -1) -- env | grep NEO4J_USERNAME=)
 ```
 
 Password:
 ```
-export NEO4J_PASSWORD=$(k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name') -- env | grep NEO4J_PASSWORD=)
+export NEO4J_PASSWORD=$(k exec $(k get pods --selector app=backend -o json |jq -r '.items[].metadata.name'| head -1) -- env | grep NEO4J_PASSWORD=)
 ```
 
 Run these two commands in two seperate terminal windows.
