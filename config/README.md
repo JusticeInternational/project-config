@@ -200,7 +200,17 @@ This step should help with seeding the db for AKS cluster.
    Seeded Data...
    ✨  Done in 52.35s.
    ```
-1. You should now be able to browse the db at http://localhost:7474/browser/
+1. Seed the RedSol data:
+   ```
+   > yarn db:seed:redsol
+   yarn run v1.22.15
+   $ babel-node src/db/seed-redsol.js
+   Warning: Email middleware will not try to send mails.
+   Warning: Sentry middleware inactive.
+   Seeded Data...
+   Done in 4.62s.
+   ```
+3. You should now be able to browse the db at http://localhost:7474/browser/
 
 
 ### Test the API
