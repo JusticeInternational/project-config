@@ -15,7 +15,7 @@ Several of the steps below were done during troubleshooting and developing a pla
 
 This docs notes are scripted out as follows:
 
-1. Env config is in [`/script/env_source.sh`](/script/env_source.sh)
+1. Env config is in [`./.env.dev`](./.env.dev)
 1. Create the instance with [`/script/create_instance.sh`](/script/create_instance.sh)
 1. Attach an acr registry to k8s with [`/script/attach_acr.sh`](/script/attach_acr.sh)
 1. Setup permissions with [`/script/assign_permissions.sh`](/script/assign_permissions.sh)
@@ -24,7 +24,7 @@ This docs notes are scripted out as follows:
 
 If your trouble shooting the rest of the doc could be useful for following and understanding what we're doing in each script.
 
-### Env Setup `env_source.sh`
+### Env Setup `.env.dev`
 ```
 RESOURCE_GROUP=redsol-RG
 SUBSCRIPTION_ID=8b91797a-2975-47ad-95dd-5767ebf67c90

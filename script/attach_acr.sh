@@ -2,12 +2,10 @@
 
 set -x -v
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az login
-az account set -s "${SUBSCRIPTION_ID}"
+./script/login.sh
 
 az acr create -g $RESOURCE_GROUP --name $ACR_NAME \
               --sku Basic \

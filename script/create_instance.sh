@@ -1,13 +1,12 @@
 #!/bin/bash
 
 set -x -v
+set -e
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az login
-az account set -s "${SUBSCRIPTION_ID}"
+./script/login.sh
 
 # # Create the Azure AD application
 # serverApplicationId="$(az ad app list| jq '[.[]| { name: .displayName, id: .appId}]' | jq -r '.[]|select("'${CLUSTER_NAME}Server'" == .name)|.id')"

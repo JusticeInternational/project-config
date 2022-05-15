@@ -2,7 +2,7 @@
 
 This is quick step deployment for AKS. If the cluster has not been shared or you have not been setup with a `dev` group access, you can also deploy a personell cluster with a free acount for about $50 / month with [these steps](/docs/references/kube_notes/bootstrap.md).
 
-Note you may have to make updates locally to `/script/env_source.sh` if you are making a personell instance and then follow the [bootstrap guide](/docs/kube_notes/bootstrap.md).
+Note you may have to make updates locally to `/.env.dev` if you are making a personell instance and then follow the [bootstrap guide](/docs/kube_notes/bootstrap.md).
 
 All of these commands require that you have cloned the `JusticeInternational/project-config` repo:
 ```
@@ -36,7 +36,7 @@ You should have each of these tools installed and setup:
 1. Login to k8s env
    - Visit and login to [the portal](https://portal.azure.com/#@redsol.onmicrosoft.com/resource/subscriptions/8b91797a-2975-47ad-95dd-5767ebf67c90/resourceGroups/redsol-RG/providers/Microsoft.ContainerService/managedClusters/redsol/overview)
    - Login with the cli: `az login`
-   - Get kubectl credentials: `source script/env_source.sh && az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID`
+   - Get kubectl credentials: `source ./.env.dev && az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID`
 2. Build the containers for the branch you want with the command `HC_BRANCH=origin/yourbranch_name ./script/buildimages.sh`, Leave `HC_BRANCH` empty if to default to `origin/stable`.
 3. Clean out any previous deployments: `kubectl delete namespace human-connection`
    WARNING THIS DELETES ALL DATA!!!

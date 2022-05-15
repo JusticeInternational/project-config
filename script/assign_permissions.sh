@@ -2,12 +2,10 @@
 
 set -x -v
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az login
-az account set -s "${SUBSCRIPTION_ID}"
+./script/login.sh
 
 AKS_ID=$(az aks show --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --query id -o tsv --subscription $SUBSCRIPTION_ID) && \
 APPDEV_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)&& \

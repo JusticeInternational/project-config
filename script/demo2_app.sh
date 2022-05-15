@@ -1,14 +1,12 @@
 #!/bin/bash
 #
 set -x -v
+set -e
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az account list --query "[].{Name:name, User:user.name, IsDefault:isDefault, Id:id}" | jq -r '.[]|select( "'$SUBSCRIPTION_ID'" == .Id)' || \
-  az login
-az account set -s "${SUBSCRIPTION_ID}"
+./script/login.sh
 
 az acr build -t ${ACR_NAME}.azurecr.io/demo:latest \
              -r ${ACR_NAME} \

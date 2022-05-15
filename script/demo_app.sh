@@ -3,15 +3,14 @@
 # A demo app per https://docs.microsoft.com/en-us/azure/aks/ingress-basic
 # note, broken images
 set -x -v
+set -e
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az login
-az account set -s "${SUBSCRIPTION_ID}"
+./script/login.sh
 
-az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
+
 
 cat << EOF | kubectl apply --namespace ingress-basic -f -
 ---

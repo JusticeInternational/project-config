@@ -2,14 +2,10 @@
 
 set -x -v
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az login
-az account set -s "${SUBSCRIPTION_ID}"
-
-az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID --admin
+./script/login.sh
 # Create a namespace for your ingress resources
 kubectl create namespace ingress-basic
 
