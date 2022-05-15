@@ -15,6 +15,10 @@ AKS_ID=$(az aks show --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --que
 APPDEV_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)&& \
 az role assignment create --assignee $APPDEV_ID --role "Azure Kubernetes Service Cluster Admin Role" --scope $AKS_ID --subscription $SUBSCRIPTION_ID
 
+# setup netowrking role
+# https://docs.microsoft.com/en-us/azure/aks/static-ip
+az role assignment create --assignee $APPDEV_ID --role "Network Contributor" --scope $AKS_ID --subscription $SUBSCRIPTION_ID
+
 CURRENT_ID=$(az ad signed-in-user show --query userPrincipalName -o tsv)
 
 GROUP_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)

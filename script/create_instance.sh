@@ -6,7 +6,7 @@ set -e
 TARGET_ENV="${TARGET_ENV:-dev}"
 source ./.env.$TARGET_ENV
 
-./script/login.sh
+./script/login.sh || echo "warning: login issues but will continue"
 
 # # Create the Azure AD application
 # serverApplicationId="$(az ad app list| jq '[.[]| { name: .displayName, id: .appId}]' | jq -r '.[]|select("'${CLUSTER_NAME}Server'" == .name)|.id')"
@@ -130,12 +130,12 @@ az aks create \
     --node-count 1 \
     --min-count 1 \
     --max-count $NODE_COUNT \
-    --load-balancer-sku basic \
+    --load-balancer-sku $SKU_NAME \
     --generate-ssh-keys \
     --network-plugin azure \
     --service-principal "${credId}" \
     --client-secret "$(cat ~/.azcli_creds.secrets.json| jq -r '.password')" \
-    --enable-vmss \
+    --vm-set-type VirtualMachineScaleSets \
     --enable-cluster-autoscaler \
     --subscription "${SUBSCRIPTION_ID}"
 
