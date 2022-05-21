@@ -22,3 +22,14 @@ Some references to initial documentation:
 - Backlog version 3 (current): https://docs.google.com/spreadsheets/d/1bOGsx9E77-5QbzHp9VJhefdqPriGX5TjfV0589Fn7u8/edit?usp=sharing
 
 See also the subfolder "Reference" in documents for more on initial documentation pertinent to the design of the app
+
+# Setting up the instance
+
+We can create the instance by running theses scripts in order:
+
+1. Setup the resource group and initial instance: `./script/create_instance.sh`
+2. Setup ACR registry: `./script/attach_acr.sh`
+3. Create and assign AD roles: `./script/assign_permissions.sh`
+4. Create ingress controller: `./script/create_ingress.sh`
+5. Create a demoapp: `./script/demo2_app.sh`
+6. Find the DNS public IP and assign a name and any aliases.

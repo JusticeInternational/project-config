@@ -2,12 +2,10 @@
 
 set -x -v
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
 
-#
-# Login account
-az login
-az account set -s "${SUBSCRIPTION_ID}"
+./script/login.sh
 
 AKS_ID=$(az aks show --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --query id -o tsv --subscription $SUBSCRIPTION_ID) && \
 APPDEV_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)&& \
@@ -16,6 +14,10 @@ az role assignment create --assignee $APPDEV_ID --role "Azure Kubernetes Service
 AKS_ID=$(az aks show --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --query id -o tsv --subscription $SUBSCRIPTION_ID) && \
 APPDEV_ID=$(az ad group show --group $APPDEV_NAME --query objectId -o tsv)&& \
 az role assignment create --assignee $APPDEV_ID --role "Azure Kubernetes Service Cluster Admin Role" --scope $AKS_ID --subscription $SUBSCRIPTION_ID
+
+# setup netowrking role
+# https://docs.microsoft.com/en-us/azure/aks/static-ip
+az role assignment create --assignee $APPDEV_ID --role "Network Contributor" --scope $AKS_ID --subscription $SUBSCRIPTION_ID
 
 CURRENT_ID=$(az ad signed-in-user show --query userPrincipalName -o tsv)
 

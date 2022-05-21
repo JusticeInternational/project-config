@@ -6,10 +6,12 @@ const PREFIX = process.env.PREFIX || '/demo-app';
 
 //
 // register routes
+fastify.register(require('./routes/root'), { prefix: PREFIX })
 fastify.register(require('./routes/ping'), { prefix: PREFIX })
 fastify.register(require('./routes/users'), { prefix: PREFIX })
 fastify.register(require('./routes/fail500'), { prefix: PREFIX })
 
+fastify.register(require('./routes/root'), { prefix: '/' })
 fastify.register(require('./routes/ping'), { prefix: '/' })
 fastify.register(require('./routes/users'), { prefix: '/' })
 fastify.register(require('./routes/fail500'), { prefix: '/' })

@@ -45,9 +45,8 @@ alias k='kubectl --namespace human-connection'
 Clone the `project-config` repo and `cd ./project-config`.
 
 ```
-source ./script/env_source.sh
-az login
-az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME --subscription $SUBSCRIPTION_ID
+source ./.env.dev
+./script/login.sh
 ```
 
 ### Connecting to the ports for development
@@ -135,12 +134,8 @@ This step should help with seeding the db for AKS cluster.
    ```
 1. Make sure your logged into the target AKS cluster:
    ```
-   source ./script/env_source.sh
-   az login
-   az aks get-credentials --resource-group $RESOURCE_GROUP \
-                          --name $CLUSTER_NAME \
-                          --overwrite-existing \
-                          --subscription $SUBSCRIPTION_ID
+   source ./.env.dev
+   ./script/login.sh
    ```
    If you run the following commands you should see the running pods:
    ```

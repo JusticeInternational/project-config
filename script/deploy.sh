@@ -2,10 +2,10 @@
 
 set -e
 
-source ./script/env_source.sh
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
+./script/login.sh
 
-export TARGET_ENV="${TARGET_ENV:-}"
-# TODO: login code
 
 # TODO: helm deployment
 helm version --template "{{.Version}}" || (
