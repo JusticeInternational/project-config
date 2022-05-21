@@ -93,14 +93,21 @@ tenantId=$(az account show --query tenantId -o tsv)
 
 # From https://github.com/Azure/azure-cli/issues/9585#issuecomment-502542000
 credId="$(az ad app list| jq '[.[]| { name: .displayName, id: .appId}]' | jq -r '.[]|select("'${CLUSTER_NAME}AKS-sp'" == .name)|.id')"
-if [ ! -z "${credId}" ]; then
-  az ad sp delete --id "${credId}"
-fi
-az ad sp create-for-rbac \
-    --name "${CLUSTER_NAME}AKS-sp" \
-    --skip-assignment > "${AD_SP_CREDS_JSON}"
-credId="$(az ad app list| jq '[.[]| { name: .displayName, id: .appId}]' | jq -r '.[]|select("'${CLUSTER_NAME}AKS-sp'" == .name)|.id')"
 
+# if the cluster exist, don't create a new id, just re-use the existing one
+cluster_id="$(az aks list| jq -r '.[] | select("'${CLUSTER_NAME}'" == .name) | .id ')"
+if [ -z "${cluster_id}" ]; then
+    if [ ! -z "${credId}" ]; then
+        az ad sp delete --id "${credId}"
+    fi
+    az ad sp create-for-rbac \
+        --name "${CLUSTER_NAME}AKS-sp" \
+        --skip-assignment > "${AD_SP_CREDS_JSON}"
+    credId="$(az ad app list| jq '[.[]| { name: .displayName, id: .appId}]' | jq -r '.[]|select("'${CLUSTER_NAME}AKS-sp'" == .name)|.id')"
+fi
+
+# TODO: these are not being used but might be useful for us later when working with AAD managed clusters
+# we're leaving it out for now.
 # serverApplicationId="$(az ad app list| jq '[.[]| { name: .displayName, id: .appId}]' | jq -r '.[]|select("'${CLUSTER_NAME}Server'" == .name)|.id')"
 # if [ -z "${serverApplicationId}" ]; then
 # serverApplicationId=$(az ad app create \
@@ -134,11 +141,12 @@ az aks create \
     --generate-ssh-keys \
     --network-plugin azure \
     --service-principal "${credId}" \
-    --client-secret "$(cat ~/.azcli_creds.secrets.json| jq -r '.password')" \
+    --client-secret "$(cat "${AD_SP_CREDS_JSON}" | jq -r '.password')" \
     --vm-set-type VirtualMachineScaleSets \
     --enable-cluster-autoscaler \
     --subscription "${SUBSCRIPTION_ID}"
 
+# TODO: these are not being used but might be useful for us later when working with AAD managed clusters
     # --node-vm-size "${VM_SIZE}" \
     # --node-count "${NODE_COUNT}" \
     # --vm-set-type AvailabilitySet \
@@ -156,7 +164,7 @@ az aks create \
     # --client-secret null \
     # --subscription "${SUBSCRIPTION_ID}"
 
-az aks show -g $RESOURCE_GROUP -n $CLUSTER_NAME \
-                                --query "identity" \
-                                --subscription $SUBSCRIPTION_ID
+echo "AKS version ==> $(az aks show -g $RESOURCE_GROUP -n $CLUSTER_NAME \
+                                --query "currentKubernetesVersion" \
+                                --subscription $SUBSCRIPTION_ID)"
 

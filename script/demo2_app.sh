@@ -7,7 +7,7 @@ TARGET_ENV="${TARGET_ENV:-dev}"
 source ./.env.$TARGET_ENV
 
 ./script/login.sh
-
+kubectl get namespace demo-app && kubectl delete namespace demo-app
 az acr build -t ${ACR_NAME}.azurecr.io/demo:latest \
              -r ${ACR_NAME} \
              -f ./config/docker/demo.dockerfile \

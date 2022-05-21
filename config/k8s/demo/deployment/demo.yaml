@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: demo-app
-        image: redsolacr.azurecr.io/demo:latest
+        image: justiceinternational.azurecr.io/demo:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

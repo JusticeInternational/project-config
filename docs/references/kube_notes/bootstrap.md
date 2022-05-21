@@ -15,12 +15,12 @@ Several of the steps below were done during troubleshooting and developing a pla
 
 This docs notes are scripted out as follows:
 
-1. Env config is in [`./.env.dev`](./.env.dev)
+1. Env config is in [`./.env.dev`](./.env.dev). This configuration is for development.
 1. Create the instance with [`/script/create_instance.sh`](/script/create_instance.sh)
-1. Attach an acr registry to k8s with [`/script/attach_acr.sh`](/script/attach_acr.sh)
 1. Setup permissions with [`/script/assign_permissions.sh`](/script/assign_permissions.sh)
+1. Attach an acr registry to k8s with [`/script/attach_acr.sh`](/script/attach_acr.sh)
 1. Create ingress with [`/script/create_ingress.sh`](/script/create_ingress.sh)
-1. Setup a demo app for testing with [`/script/demo?_app.sh`](/script/demo_app.sh)
+1. Setup a demo app for testing with [`/script/demo2_app.sh`](/script/demo2_app.sh). You can also troubleshoot with a simpler app in `./script/demo_app.sh`.
 
 If your trouble shooting the rest of the doc could be useful for following and understanding what we're doing in each script.
 
@@ -50,7 +50,7 @@ az login
 az account set -s "${SUBSCRIPTION_ID}"
 ```
 
-### Create AD app to integrate
+### Create AD app to integrate (not used)
 
 ```
 # Create the Azure AD application
@@ -63,7 +63,7 @@ serverApplicationId=$(az ad app create \
 az ad app update --id $serverApplicationId --set groupMembershipClaims=All
 ```
 
-### Create Service Princapl
+### Create Service Princapl (not used)
 
 ```
 # Create a service principal for the Azure AD application
@@ -76,7 +76,7 @@ serverApplicationSecret=$(az ad sp credential reset \
     --query password -o tsv)
 ```
 
-### Creare AD Permissions
+### Creare AD Permissions (not used)
 ```
 az ad app permission add \
     --id $serverApplicationId \
@@ -87,7 +87,7 @@ az ad app permission grant --id $serverApplicationId --api 00000003-0000-0000-c0
 az ad app permission admin-consent --id  $serverApplicationId
 ```
 
-### Create an AD App and it's Service Principal
+### Create an AD App and it's Service Principal (not used)
 
 ```
 clientApplicationId=$(az ad app create \
@@ -103,7 +103,7 @@ oAuthPermissionId=$(az ad app show --id $serverApplicationId --query "oauth2Perm
 az ad app permission add --id $clientApplicationId --api $serverApplicationId --api-permissions ${oAuthPermissionId}=Scope
 az ad app permission grant --id $clientApplicationId --api $serverApplicationId
 ```
-### Create Resource Group
+### Create Resource Group (part of `./script/create_instance.sh`)
 
 ```
 az group create --name $RESOURCE_GROUP \
@@ -111,7 +111,7 @@ az group create --name $RESOURCE_GROUP \
                 --subscription $SUBSCRIPTION_ID
 ```
 
-### Setup Network
+### Setup Network (not used)
 From [this article](https://docs.microsoft.com/en-us/azure/aks/configure-azure-cni), we'll setup the network:
 
 ```
@@ -144,7 +144,7 @@ APP_ID=$(az ad app show --id $serverApplicationId --query "appId" -o tsv)
 az role assignment create --assignee $APP_ID --scope $VNET_ID --role "Network Contributor"
 ```
 
-### Create AZ cluster `create_instance.sh`
+### Create AZ cluster `./script/create_instance.sh`
 ```
 
 tenantId=$(az account show --query tenantId -o tsv)
@@ -297,23 +297,14 @@ kubectl get pods --all-namespaces
 ```
 
 ### Setting up AKS ingress controller `create_ingress.sh`
-Lets setup inbound access to services with [these instructions](https://docs.microsoft.com/en-us/azure/aks/ingress-basic).
+There are several ways to setup ingress controllers and we once used [these instructions](https://docs.microsoft.com/en-us/azure/aks/ingress-basic) for a basic controller. However since then AZ also now provides a fully managed ingress controller.
 
-```
-# Create a namespace for your ingress resources
-kubectl create namespace ingress-basic
+We've updated out scripts to use [this setup method](https://docs.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-new). Reasons for this are that it's easier and better maintained over time. However cost/mileage may varry.
 
-# Add the ingress-nginx repository
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+The original docs and explanation on [ingress can be found here](https://docs.microsoft.com/en-us/azure/application-gateway/ingress-controller-overview#difference-between-helm-deployment-and-aks-add-on).
 
-# Use Helm to deploy an NGINX ingress controller
-helm install nginx-ingress ingress-nginx/ingress-nginx \
-    --namespace ingress-basic \
-    --set controller.replicaCount=2 \
-    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
-    --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux
-```
+- Examples: https://docs.microsoft.com/en-us/azure/application-gateway/ingress-controller-expose-service-over-http-https
+
 
 #### Test ingress `demo_app?.sh`
 Test it with [this app demo](https://docs.microsoft.com/en-us/azure/aks/ingress-basic#run-demo-applications).
