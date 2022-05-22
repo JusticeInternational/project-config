@@ -25,11 +25,4 @@ See also the subfolder "Reference" in documents for more on initial documentatio
 
 # Setting up the instance
 
-We can create the instance by running theses scripts in order:
-
-1. Setup the resource group and initial instance: `./script/create_instance.sh`
-2. Setup ACR registry: `./script/attach_acr.sh`
-3. Create and assign AD roles: `./script/assign_permissions.sh`
-4. Create ingress controller: `./script/create_ingress.sh`
-5. Create a demoapp: `./script/demo2_app.sh`
-6. Find the DNS public IP and assign a name and any aliases.
+We can create the instance by running theses [steps](https://github.com/JusticeInternational/project-config/blob/stable/docs/references/kube_notes/bootstrap.md#command-setup-and-steps). The scripts are there to make it easier.
