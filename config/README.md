@@ -39,7 +39,7 @@ kubectl delete namespace demo-app && \
 These are just some general notes that will work with the following alias;
 
 ```
-alias k='kubectl --namespace human-connection'
+alias k='kubectl --namespace human-connection-dev'
 ```
 ### Login to k8s cluster
 Clone the `project-config` repo and `cd ./project-config`.
@@ -69,12 +69,12 @@ Run these two commands in two seperate terminal windows.
 
 Terminal 1:
 ```
-k port-forward service/neo4j 7474:7474 7687:7687
+kubectl --namespace human-connection-dev port-forward service/neo4j 7474:7474 7687:7687
 ```
 
 Terminal 2:
 ```
-k port-forward service/backend 4000:4000
+kubectl --namespace human-connection-dev port-forward service/backend 4000:4000
 ```
 These commands will remain running unitl you cancel them with `ctrl-c`. They are intended to open up local ports for you to access the graphql backend urls with `localhost`.
 
@@ -173,8 +173,8 @@ This step should help with seeding the db for AKS cluster.
    export NEO4J_PASSWORD='<value from data.NEO4J_PASSWORD>'
    ```
    ```
-   sed -i -e 's/NEO4J_USERNAME=.*/NEO4J_USERNAME='${NEO4J_USERNAME}'/' ./.env && \
-   sed -i -e 's/NEO4J_PASSWORD=.*/NEO4J_PASSWORD='${NEO4J_PASSWORD}'/' ./.env
+   sed -i -e 's/NEO4J_USERNAME=.*/'${NEO4J_USERNAME}'/' ./.env && \
+   sed -i -e 's/NEO4J_PASSWORD=.*/'${NEO4J_PASSWORD}'/' ./.env
    ```
 
 1. You should have yarn and node setup for the next step. Run the command:
