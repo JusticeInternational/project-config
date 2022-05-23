@@ -120,7 +120,7 @@ apk add \
 ### Testing pod to pod communication from backend
 
 ```
-nc neo4j.human-connection.svc.cluster.local 7474
+nc neo4j.human-connection-dev.svc.cluster.local 7474
 ```
 type `HELO` in connection
 
@@ -139,7 +139,7 @@ This step should help with seeding the db for AKS cluster.
    ```
    If you run the following commands you should see the running pods:
    ```
-   ❯ kubectl --namespace human-connection get pods
+   ❯ kubectl --namespace human-connection-dev get pods
    NAME                      READY   STATUS    RESTARTS   AGE
    backend-7568bcd55-d6zz2   1/1     Running   0          24h
    neo4j-664544488-6lhdz     1/1     Running   0          24h
@@ -147,7 +147,7 @@ This step should help with seeding the db for AKS cluster.
 
 1. Proxy the connection to AKS neo4j app:
    ```
-   alias k='kubectl --namespace human-connection'
+   alias k='kubectl --namespace human-connection-dev'
    k port-forward service/neo4j 7474:7474 7687:7687
    ```
    You should see output as follows:

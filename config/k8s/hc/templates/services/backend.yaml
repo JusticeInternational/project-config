@@ -10,9 +10,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    # name: backend
     - protocol: TCP
       targetPort: 4000
-      port: 4000
+      port: 80
   selector:
     app: backend

@@ -14,7 +14,7 @@ backend:
   replicaCount: 2
 
 image:
-  repository: redsolacr.azurecr.io/humanconnection/
+  repository: justiceinternational.azurecr.io/humanconnection/
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
