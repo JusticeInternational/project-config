@@ -13,7 +13,7 @@ source ./.env.$TARGET_ENV
 az network public-ip create \
     --resource-group "${RESOURCE_GROUP}" \
     --name "${CLUSTER_NAME}-ip" \
-    --sku $SKU_NAME \
+    --sku ${PUBLIC_IP_SKU_NAME} \
     --allocation-method Static \
     --subscription "${SUBSCRIPTION_ID}"
 

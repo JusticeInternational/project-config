@@ -130,6 +130,8 @@ az group create --name $RESOURCE_GROUP \
 echo "create cluster"
     # --enable-managed-identity \
     # --assign-identity "$ASSIGN_ID" \
+    # --network-plugin azure \ # uncomment if working with AGIC ./script/create_ingress_agic.sh
+
 az aks create \
     -g "${RESOURCE_GROUP}" \
     --name "${CLUSTER_NAME}" \
@@ -139,12 +141,12 @@ az aks create \
     --max-count $NODE_COUNT \
     --load-balancer-sku $SKU_NAME \
     --generate-ssh-keys \
-    --network-plugin azure \
     --service-principal "${credId}" \
     --client-secret "$(cat "${AD_SP_CREDS_JSON}" | jq -r '.password')" \
     --vm-set-type VirtualMachineScaleSets \
     --enable-cluster-autoscaler \
     --subscription "${SUBSCRIPTION_ID}"
+
 
 # TODO: these are not being used but might be useful for us later when working with AAD managed clusters
     # --node-vm-size "${VM_SIZE}" \
