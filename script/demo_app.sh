@@ -10,11 +10,14 @@ source ./.env.$TARGET_ENV
 
 ./script/login.sh
 
-cat << EOF | kubectl apply --namespace ingress-basic -f -
+kubectl create namespace hello-world || echo "hello-world already exists"
+
+cat << EOF | kubectl apply --namespace hello-world -f -
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: hello-world
   name: aks-helloworld-one  
 spec:
   replicas: 1
@@ -38,6 +41,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: hello-world
   name: aks-helloworld-one  
 spec:
   type: ClusterIP
@@ -48,11 +52,12 @@ spec:
 EOF
 
 
-cat << EOF | kubectl apply --namespace ingress-basic -f -
+cat << EOF | kubectl apply --namespace hello-world -f -
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: hello-world
   name: aks-helloworld-two  
 spec:
   replicas: 1
@@ -76,6 +81,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: hello-world
   name: aks-helloworld-two  
 spec:
   type: ClusterIP
@@ -86,11 +92,12 @@ spec:
 EOF
 
 
-cat << EOF | kubectl apply --namespace ingress-basic -f -
+cat << EOF | kubectl apply --namespace hello-world -f -
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: hello-world
   name: hello-world-ingress
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -127,7 +134,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: hello-world-ingress-static
-  namespace: ingress-basic
+  namespace: hello-world
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /static/$2

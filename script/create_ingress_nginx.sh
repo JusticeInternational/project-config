@@ -46,6 +46,7 @@ kubectl create namespace $LB_NAMESPACE || echo "$LB_NAMESPACE already exists"
 #   --set controller.service.loadBalancerIP=$public_ip
 # so updating to using this method:
 # https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-helm/
+# https://github.com/nginxinc/kubernetes-ingress/tree/v2.3.0/deployments/helm-chart
 git clone https://github.com/nginxinc/kubernetes-ingress --branch v2.3.0
 cd kubernetes-ingress/deployments/helm-chart
 kubectl apply -f crds/

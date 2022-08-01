@@ -31,7 +31,7 @@ function git_clone_hc() {
       git reset --hard "${_default_branch}"
       git branch --list|grep -e "\s${HC_BRANCH}$" || git checkout -b "${HC_BRANCH}"
       git checkout "${HC_BRANCH}"
-      eval git pull origin $(echo "${HC_BRANCH}" | sed 's/\// /')
+      eval git pull $(echo "${HC_BRANCH}" | sed 's/\// /')
     )
 }
 
