@@ -6,6 +6,7 @@ TARGET_ENV="${TARGET_ENV:-dev}"
 source ./.env.$TARGET_ENV
 ./script/login.sh
 
+NAMESPACE=human-connection
 
 # TODO: helm deployment
 helm version --template "{{.Version}}" || (
@@ -14,4 +15,14 @@ helm version --template "{{.Version}}" || (
     exit 1
 )
 
-helm upgrade --set deployment.env="${TARGET_ENV}" hc ./config/k8s/hc
+if [ -n "$(kubectl get namespace human-connection-dev 2>/dev/null)" ]; then
+    helm upgrade \
+        --set deployment.env="${TARGET_ENV}" \
+        --set deployment.namespace="${NAMESPACE}" \
+        hc ./config/k8s/hc
+else
+    helm install \
+        --set deployment.env="${TARGET_ENV}" \
+        --set deployment.namespace="${NAMESPACE}" \
+        hc ./config/k8s/hc
+fi

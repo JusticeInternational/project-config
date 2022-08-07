@@ -6,9 +6,12 @@ set -x -v
 
 echo "Building ACR images"
 
+TARGET_ENV="${TARGET_ENV:-dev}"
+source ./.env.$TARGET_ENV
+
 HC_BRANCH="${HC_BRANCH:-origin/stable}"
-ACR_REGISTRY="${ACR_REGISTRY:-redsolacr.azurecr.io}"
-ACR_REGISTRY_NAME="$(echo $ACR_REGISTRY|awk -F'.' '{print $1}')"
+ACR_REGISTRY="${ACR_REGISTRY:-${ACR_NAME}.azurecr.io}"
+ACR_REGISTRY_NAME=${ACR_NAME}
 HC_DIR="${HC_DIR:-.env/Human-Connection}"
 SERVICES="${SERVICES:-neo4j backend}"
 PROJECT="${PROJECT:-humanconnection}"

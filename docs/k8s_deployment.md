@@ -66,5 +66,6 @@ kubectl --namespace human-connection get service neo4j --watch
 Run the command to remove the app:
 
 ```
+helm uninstall hc ./config/k8s/hc
 kubectl delete namespace human-connection
 ```

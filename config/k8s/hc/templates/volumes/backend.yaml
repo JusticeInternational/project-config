@@ -9,4 +9,5 @@ spec:
   storageClassName: managed-premium
   resources:
     requests:
-      storage: 5Gi
+      # 10G == 6/day == 180/month, target < 1/day
+      storage: 1Gi
