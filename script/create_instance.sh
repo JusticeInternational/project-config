@@ -127,8 +127,22 @@ az group create --name $RESOURCE_GROUP \
                     --location $LOCATION \
                     --subscription $SUBSCRIPTION_ID
 
+# create vnet
+az network vnet create \
+            --resource-group $RESOURCE_GROUP \
+            --name "${RESOURCE_GROUP}_vnet" \
+            --address-prefixes 192.168.0.0/16 \
+            --subnet-name "${RESOURCE_GROUP}_subnet" \
+            --subnet-prefix 192.168.1.0/24 \
+            --subscription $SUBSCRIPTION_ID
+SUBNET_ID=$(az network vnet subnet show \
+            --resource-group ${RESOURCE_GROUP} \
+            --vnet-name "${RESOURCE_GROUP}_vnet" \
+            --name "${RESOURCE_GROUP}_subnet" \
+            --query id -o tsv \
+              --subscription $SUBSCRIPTION_ID)
+
 echo "create cluster"
-    # --enable-managed-identity \
     # --assign-identity "$ASSIGN_ID" \
     # --network-plugin azure \ # uncomment if working with AGIC ./script/create_ingress_agic.sh
 
@@ -141,10 +155,15 @@ az aks create \
     --max-count $NODE_COUNT \
     --load-balancer-sku $SKU_NAME \
     --generate-ssh-keys \
+    --enable-managed-identity \
     --service-principal "${credId}" \
     --client-secret "$(cat "${AD_SP_CREDS_JSON}" | jq -r '.password')" \
     --vm-set-type VirtualMachineScaleSets \
     --enable-cluster-autoscaler \
+    --network-plugin azure \
+    --docker-bridge-address 172.17.0.1/16 \
+    --service-cidr 10.2.0.0/24 \
+    --dns-service-ip 10.2.0.10 \
     --subscription "${SUBSCRIPTION_ID}"
 
 
